@@ -34,7 +34,7 @@ A professional, award-winning web application for the Software Development Club 
 ### 1. Clone and Install
 
 ```bash
-git clone <your-repository-url>
+git clone <sdc-registration-app>
 cd sdc-registration-app
 pnpm install
 ```
@@ -171,7 +171,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 👥 Team
 
 - **President**: Heerath Bhat
-- **Development**: Software Development Club Team
+- **Development**: Software Development Club Team x Piratla Ankit Rama Datt
 
 ## 📞 Support
 
@@ -191,5 +191,5 @@ For support and questions:
 
 ---
 
-Built with ❤️ by the Software Development Club
+Built with ❤️ by Piratla Ankit Rama Datt
 
