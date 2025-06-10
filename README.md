@@ -164,21 +164,15 @@ firebase deploy
 4. Push to branch: `git push origin feature/new-feature`
 5. Submit a pull request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
 ## 👥 Team
 
 - **President**: Heerath Bhat
-- **Development**: Software Development Club Team x Piratla Ankit Rama Datt
+- **Development**: Piratla Ankit Rama Datt
 
 ## 📞 Support
 
 For support and questions:
-- Email: sdc@university.edu
-- Discord: [SDC Community Server]
-- GitHub Issues: [Create an issue]
+- Email: itsme.ankit2006@gmail.com
 
 ## 🎯 Roadmap
 
