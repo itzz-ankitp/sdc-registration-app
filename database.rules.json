@@ -1,0 +1,18 @@
+{
+  "rules": {
+    ".read": "auth != null && (root.child('admins').child(auth.uid).exists() || root.child('users').child(auth.uid).exists())",
+    ".write": "auth != null && (root.child('admins').child(auth.uid).exists() || root.child('users').child(auth.uid).exists())",
+    "users": {
+      ".read": "auth != null && (root.child('admins').child(auth.uid).exists() || data.child(auth.uid).exists())",
+      ".write": "auth != null && (root.child('admins').child(auth.uid).exists() || data.child(auth.uid).exists())",
+      "$uid": {
+        ".read": "auth != null && (root.child('admins').child(auth.uid).exists() || auth.uid == $uid)",
+        ".write": "auth != null && (root.child('admins').child(auth.uid).exists() || auth.uid == $uid)"
+      }
+    },
+    "admins": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).exists()",
+      ".write": "auth != null && root.child('admins').child(auth.uid).exists()"
+    }
+  }
+} 

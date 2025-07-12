@@ -47,6 +47,13 @@ const Dashboard = ({ user }) => {
 
   const quickActions = [
     {
+      title: 'My Profile',
+      description: 'View and edit your profile details',
+      icon: User,
+      link: '/profile',
+      color: 'from-[var(--color-sdc-purple-dark)] to-[var(--color-sdc-purple-mid)]'
+    },
+    {
       title: 'Registration Timeline',
       description: 'View the registration process steps',
       icon: Calendar,
@@ -92,6 +99,16 @@ const Dashboard = ({ user }) => {
               <User className="h-4 w-4" />
               <span className="text-sm">{user?.email}</span>
             </div>
+            <Link to="/profile">
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-gray-700 text-gray-300 hover:bg-gray-800"
+              >
+                <User className="h-4 w-4 mr-2" />
+                Profile
+              </Button>
+            </Link>
             <Button
               onClick={handleSignOut}
               variant="outline"

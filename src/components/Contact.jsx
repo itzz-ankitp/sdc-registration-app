@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useForm, ValidationError } from '@formspree/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,14 +10,12 @@ import { ArrowLeft, Mail, User, MessageSquare, Send, CheckCircle } from 'lucide-
 import sdcLogo from '../assets/sdc.png';
 
 const Contact = () => {
+  const [state, handleSubmit] = useForm("mdkzqvnb");
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     message: ''
   });
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(null);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -27,64 +26,29 @@ const Contact = () => {
 
   const validateForm = () => {
     if (!formData.name.trim()) {
-      setError('Name is required');
       return false;
     }
     if (!formData.email.trim()) {
-      setError('Email is required');
       return false;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      setError('Please enter a valid email address');
       return false;
     }
     if (!formData.message.trim()) {
-      setError('Message is required');
       return false;
     }
     if (formData.message.trim().length < 10) {
-      setError('Message must be at least 10 characters long');
       return false;
     }
     return true;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-    setSuccess(false);
-
+  const onSubmit = (e) => {
     if (!validateForm()) {
+      e.preventDefault();
       return;
     }
-
-    setLoading(true);
-
-    try {
-      // In a real deployment, this would be your Cloud Function URL
-      // For now, we'll simulate the API call
-      const response = await fetch('/api/sendContactEmail', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        setSuccess(true);
-        setFormData({ name: '', email: '', message: '' });
-      } else {
-        throw new Error('Failed to send message');
-      }
-    } catch (err) {
-      // For demo purposes, we'll show success anyway
-      setSuccess(true);
-      setFormData({ name: '', email: '', message: '' });
-      console.log('Contact form submitted:', formData);
-    } finally {
-      setLoading(false);
-    }
+    // Formspree will handle the submission
   };
 
   const contactInfo = [
@@ -155,13 +119,15 @@ const Contact = () => {
             </CardHeader>
             
             <CardContent>
-              {error && (
+              {state.errors && state.errors.length > 0 && (
                 <Alert className="mb-4 border-red-500/50 bg-red-500/10">
-                  <AlertDescription className="text-red-400">{error}</AlertDescription>
+                  <AlertDescription className="text-red-400">
+                    Please check the form and try again.
+                  </AlertDescription>
                 </Alert>
               )}
               
-              {success && (
+              {state.succeeded && (
                 <Alert className="mb-4 border-green-500/50 bg-green-500/10">
                   <AlertDescription className="text-green-400">
                     Thank you for your message! We have received your inquiry and will get back to you soon.
@@ -178,6 +144,7 @@ const Contact = () => {
                     <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
                       id="name"
+                      name="name"
                       type="text"
                       placeholder="Enter your full name"
                       value={formData.name}
@@ -196,6 +163,7 @@ const Contact = () => {
                     <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
                       id="email"
+                      name="email"
                       type="email"
                       placeholder="Enter your email address"
                       value={formData.email}
@@ -204,6 +172,12 @@ const Contact = () => {
                       required
                     />
                   </div>
+                  <ValidationError 
+                    prefix="Email" 
+                    field="email"
+                    errors={state.errors}
+                    className="text-red-400 text-sm"
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -212,6 +186,7 @@ const Contact = () => {
                   </label>
                   <Textarea
                     id="message"
+                    name="message"
                     placeholder="Tell us how we can help you..."
                     value={formData.message}
                     onChange={(e) => handleInputChange('message', e.target.value)}
@@ -221,14 +196,23 @@ const Contact = () => {
                   <p className="text-xs text-gray-500">
                     {formData.message.length}/500 characters
                   </p>
+                  <ValidationError 
+                    prefix="Message" 
+                    field="message"
+                    errors={state.errors}
+                    className="text-red-400 text-sm"
+                  />
                 </div>
+
+                {/* Hidden field for custom subject */}
+                <input type="hidden" name="_subject" value={`SDC Contact Form - ${formData.name}`} />
 
                 <Button
                   type="submit"
                   className="w-full btn-primary"
-                  disabled={loading}
+                  disabled={state.submitting}
                 >
-                  {loading ? (
+                  {state.submitting ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                       Sending...

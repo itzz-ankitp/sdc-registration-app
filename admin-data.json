@@ -1,0 +1,10 @@
+{
+  "admins": {
+    "0JkRLEEnv1dDEPaXaysRfchzGoT2": {
+      "email": "sdcmvjce@gmail.com",
+      "role": "admin",
+      "createdAt": "2025-07-12T00:00:00.000Z",
+      "permissions": ["read_users", "write_users", "read_all"]
+    }
+  }
+} 

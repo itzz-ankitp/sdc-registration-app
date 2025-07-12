@@ -12,6 +12,13 @@ import Timeline from './components/Timeline';
 import Contact from './components/Contact';
 import About from './components/About';
 import LoadingSpinner from './components/LoadingSpinner';
+import TermsAndConditions from './components/TermsAndConditions';
+import Admin from './components/Admin';
+import Profile from './components/Profile';
+import MigrateUsers from './components/MigrateUsers';
+import DatabaseTest from './components/DatabaseTest';
+import FirebaseTest from './components/FirebaseTest';
+import DataRecovery from './components/DataRecovery';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -45,6 +52,13 @@ function App() {
             element={user ? <Navigate to="/dashboard" /> : <Register />} 
           />
           <Route path="/about" element={<About />} />
+          <Route path="/terms" element={<TermsAndConditions />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/migrate-users" element={<MigrateUsers />} />
+          <Route path="/database-test" element={<DatabaseTest />} />
+          <Route path="/firebase-test" element={<FirebaseTest />} />
+          <Route path="/data-recovery" element={<DataRecovery />} />
           
           {/* Protected routes */}
           <Route 

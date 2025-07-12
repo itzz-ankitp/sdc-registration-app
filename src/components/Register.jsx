@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
-import { auth, db } from '../firebase';
+import { ref as dbRef, set as dbSet } from 'firebase/database';
+import { auth, realtimeDb } from '../firebase';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,18 +30,20 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
 
   const departments = [
-    'Computer Science',
-    'Information Technology',
-    'Software Engineering',
-    'Electrical Engineering',
-    'Electronics Engineering',
+    'Computer Science Engineering',
+    'Computer Science and Engineering (Data Science)',
+    'Computer Science and Design',
+    'Artificial Intelligence and Machine Learning',
+    'Information Science Engineering',
+    'Electrical and Electronics Engineering',
+    'Electronics and Communication Engineering',
+    'Electronics and Communication Engineering-VLSI',
+    'Electronics and Communication Engineering-Advanced Communication Technology',
     'Mechanical Engineering',
     'Civil Engineering',
-    'Business Administration',
-    'Other'
   ];
 
-  const years = ['1', '2', '3', '4', '5+'];
+  const years = ['1', '2', '3', '4'];
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -113,25 +115,52 @@ const Register = () => {
       );
 
       // Update user profile
-      await updateProfile(userCredential.user, {
-        displayName: formData.fullName
-      });
+      try {
+        await updateProfile(userCredential.user, {
+          displayName: formData.fullName
+        });
+      } catch (profileErr) {
+        console.error('Profile update error:', profileErr);
+      }
 
-      // Save additional user data to Firestore
-      await setDoc(doc(db, 'users', userCredential.user.uid), {
-        fullName: formData.fullName,
-        email: formData.email,
-        studentId: formData.studentId,
-        department: formData.department,
-        yearOfStudy: parseInt(formData.yearOfStudy),
-        contactNumber: formData.contactNumber,
-        createdAt: new Date(),
-        registrationComplete: true
-      });
+      // Save user data to Realtime Database for admin
+      try {
+        console.log('Attempting to write to Realtime Database...');
+        console.log('User UID:', userCredential.user.uid);
+        console.log('Data to write:', {
+          fullName: formData.fullName,
+          email: formData.email,
+          studentId: formData.studentId,
+          department: formData.department,
+          yearOfStudy: parseInt(formData.yearOfStudy),
+          contactNumber: formData.contactNumber,
+          createdAt: new Date().toISOString(),
+          registrationComplete: true
+        });
+        
+        await dbSet(dbRef(realtimeDb, `users/${userCredential.user.uid}`), {
+          fullName: formData.fullName,
+          email: formData.email,
+          studentId: formData.studentId,
+          department: formData.department,
+          yearOfStudy: parseInt(formData.yearOfStudy),
+          contactNumber: formData.contactNumber,
+          createdAt: new Date().toISOString(),
+          registrationComplete: true
+        });
+        
+        console.log('✅ Successfully wrote to Realtime Database');
+      } catch (realtimeErr) {
+        console.error('❌ Realtime Database write error:', realtimeErr);
+        console.error('Error code:', realtimeErr.code);
+        console.error('Error message:', realtimeErr.message);
+        // Don't throw the error, just log it so registration can continue
+      }
 
       // User will be redirected automatically by the auth state change
     } catch (err) {
       setError(err.message);
+      console.error('Registration error:', err);
     } finally {
       setLoading(false);
     }
@@ -347,7 +376,7 @@ const Register = () => {
               />
               <label htmlFor="agreeToTerms" className="text-sm text-gray-300">
                 I agree to the{' '}
-                <a href="#" className="text-[var(--color-sdc-purple-mid)] hover:text-[var(--color-sdc-blue-bright)] transition-colors">
+                <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-[var(--color-sdc-purple-mid)] hover:text-[var(--color-sdc-blue-bright)] transition-colors">
                   Terms and Conditions
                 </a>
               </label>
