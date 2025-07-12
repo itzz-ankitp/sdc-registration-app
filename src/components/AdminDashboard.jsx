@@ -1,0 +1,456 @@
+import { useState, useEffect } from 'react';
+import { signOut, onAuthStateChanged } from 'firebase/auth';
+import { ref, onValue, get } from 'firebase/database';
+import { auth, realtimeDb } from '../firebase';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { 
+  LogOut, 
+  Clock, 
+  User, 
+  Users, 
+  Settings, 
+  Database, 
+  Shield, 
+  BarChart3, 
+  FileText,
+  MessageCircle,
+  Building,
+  Smartphone,
+  Globe,
+  Brain,
+  Gamepad2,
+  Code
+} from 'lucide-react';
+import sdcLogo from '../assets/sdc.png';
+
+const ADMIN_UID = '0JkRLEEnv1dDEPaXaysRfchzGoT2';
+
+const AdminDashboard = () => {
+  const [user, setUser] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [greeting, setGreeting] = useState('');
+  const [dbError, setDbError] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (user && user.uid === ADMIN_UID) {
+      loadUsers();
+      updateGreeting();
+    }
+  }, [user]);
+
+  const updateGreeting = () => {
+    const now = new Date();
+    const hour = now.getHours();
+    
+    let timeGreeting;
+    if (hour < 12) {
+      timeGreeting = 'Good morning';
+    } else if (hour < 17) {
+      timeGreeting = 'Good afternoon';
+    } else {
+      timeGreeting = 'Good evening';
+    }
+    
+    const userName = user?.displayName || 'Administrator';
+    setGreeting(`${timeGreeting}, ${userName}!`);
+  };
+
+  const loadUsers = async () => {
+    try {
+      setDbError(null);
+      const usersRef = ref(realtimeDb, 'users');
+      
+      const snapshot = await get(usersRef);
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        setUsers(Object.values(data));
+      } else {
+        setUsers([]);
+      }
+
+      const unsubscribe = onValue(usersRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          setUsers(Object.values(data));
+        } else {
+          setUsers([]);
+        }
+      }, (error) => {
+        console.error('Database access error:', error);
+        setDbError('Failed to access user data. Please check database rules.');
+      });
+
+      return () => unsubscribe();
+    } catch (err) {
+      console.error('Error loading users:', err);
+      setDbError('Failed to load user data. Please check your admin permissions.');
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      navigate('/login');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
+  const adminActions = [
+    {
+      title: 'User Management',
+      description: 'View and manage all registered users',
+      icon: Users,
+      link: '/admin',
+      color: 'from-[var(--color-sdc-purple-dark)] to-[var(--color-sdc-purple-mid)]',
+      count: users.length
+    },
+    {
+      title: 'Development Tasks',
+      description: 'View and manage development tasks for each track',
+      icon: Code,
+      link: '/tasks',
+      color: 'from-[var(--color-sdc-purple-mid)] to-[var(--color-sdc-purple-bright)]'
+    },
+    {
+      title: 'Database Tools',
+      description: 'Access database testing and migration tools',
+      icon: Database,
+      link: '/database-test',
+      color: 'from-[var(--color-sdc-purple-bright)] to-[var(--color-sdc-blue-bright)]'
+    },
+    {
+      title: 'Firebase Test',
+      description: 'Test Firebase configuration and connectivity',
+      icon: Shield,
+      link: '/firebase-test',
+      color: 'from-[var(--color-sdc-blue-bright)] to-[var(--color-sdc-purple-mid)]'
+    },
+    {
+      title: 'Data Recovery',
+      description: 'Help users recover missing profile data',
+      icon: FileText,
+      link: '/data-recovery',
+      color: 'from-[var(--color-sdc-purple-mid)] to-[var(--color-sdc-blue-bright)]'
+    },
+    {
+      title: 'User Migration',
+      description: 'Migrate users from Firestore to Realtime DB',
+      icon: Settings,
+      link: '/migrate-users',
+      color: 'from-[var(--color-sdc-blue-bright)] to-[var(--color-sdc-purple-dark)]'
+    }
+  ];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[var(--color-sdc-dark)] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-sdc-purple-mid)]"></div>
+      </div>
+    );
+  }
+
+
+
+  if (!user) {
+    console.log('AdminDashboard - No user, redirecting to login');
+    return <Navigate to="/login" />;
+  }
+
+  if (user.uid !== ADMIN_UID) {
+    return (
+      <div className="min-h-screen bg-[var(--color-sdc-dark)] flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-white mb-4">Access Denied</h1>
+          <p className="text-gray-400 mb-6">You don't have permission to access the admin dashboard.</p>
+          <Button onClick={() => navigate('/dashboard')} className="btn-primary">
+            Go to Dashboard
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[var(--color-sdc-dark)] relative overflow-hidden">
+      {/* Background elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-sdc-purple-dark)]/10 via-transparent to-[var(--color-sdc-blue-bright)]/10"></div>
+      <div className="absolute top-20 right-20 w-64 h-64 bg-[var(--color-sdc-purple-mid)]/5 rounded-full animate-float"></div>
+      <div className="absolute bottom-20 left-20 w-48 h-48 bg-[var(--color-sdc-blue-bright)]/5 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
+
+      {/* Header */}
+      <header className="relative z-10 p-6 border-b border-gray-800">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <img src={sdcLogo} alt="SDC Logo" className="w-12 h-12" />
+            <div>
+              <h1 className="text-xl font-bold text-white">Software Development Club</h1>
+              <p className="text-sm text-gray-400">Admin Portal</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 text-gray-300">
+              <Shield className="h-4 w-4 text-[var(--color-sdc-purple-mid)]" />
+              <span className="text-sm">Administrator</span>
+            </div>
+            <div className="flex items-center space-x-2 text-gray-300">
+              <User className="h-4 w-4" />
+              <span className="text-sm">{user?.email}</span>
+            </div>
+            <Button
+              onClick={handleSignOut}
+              variant="outline"
+              size="sm"
+              className="border-gray-700 text-gray-300 hover:bg-gray-800"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="relative z-10 max-w-7xl mx-auto p-6">
+        {/* Welcome Section */}
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center mb-4">
+            <Shield className="h-6 w-6 text-[var(--color-sdc-purple-mid)] mr-2" />
+            <h2 className="text-3xl md:text-4xl font-bold text-white">
+              {greeting}
+            </h2>
+          </div>
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+            Welcome to the SDC Admin Portal. Manage users, monitor system health, and oversee the registration process.
+          </p>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+          <Card className="card-dark border-gray-800">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-[var(--color-sdc-purple-mid)] to-[var(--color-sdc-purple-bright)] flex items-center justify-center">
+                  <Users className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-white">{users.length}</p>
+                  <p className="text-gray-400">Total Users</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="card-dark border-gray-800">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center">
+                  <Smartphone className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-white">
+                    {users.filter(u => u.developmentTrack === 'android').length}
+                  </p>
+                  <p className="text-gray-400">Android Dev</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="card-dark border-gray-800">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
+                  <Globe className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-white">
+                    {users.filter(u => u.developmentTrack === 'web').length}
+                  </p>
+                  <p className="text-gray-400">Web Dev</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="card-dark border-gray-800">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center">
+                  <Brain className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-white">
+                    {users.filter(u => u.developmentTrack === 'ml').length}
+                  </p>
+                  <p className="text-gray-400">ML Dev</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Additional Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <Card className="card-dark border-gray-800">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 flex items-center justify-center">
+                  <Gamepad2 className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-white">
+                    {users.filter(u => u.developmentTrack === 'game').length}
+                  </p>
+                  <p className="text-gray-400">Game Dev</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="card-dark border-gray-800">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-[var(--color-sdc-blue-bright)] to-[var(--color-sdc-purple-mid)] flex items-center justify-center">
+                  <BarChart3 className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-white">Active</p>
+                  <p className="text-gray-400">System Status</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="card-dark border-gray-800">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-[var(--color-sdc-purple-bright)] to-[var(--color-sdc-blue-bright)] flex items-center justify-center">
+                  <Shield className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-white">Admin</p>
+                  <p className="text-gray-400">Access Level</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Admin Actions Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          {adminActions.map((action, index) => (
+            <Link key={index} to={action.link}>
+              <Card className="card-dark border-gray-800 hover:border-[var(--color-sdc-purple-mid)]/50 transition-all duration-300 transform hover:scale-105 group">
+                <CardHeader>
+                  <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${action.color} flex items-center justify-center mb-4 group-hover:animate-pulse-glow`}>
+                    <action.icon className="h-6 w-6 text-white" />
+                  </div>
+                  <CardTitle className="text-white group-hover:sdc-text-gradient transition-all duration-300 flex items-center justify-between">
+                    {action.title}
+                    {action.count !== undefined && (
+                      <span className="text-sm bg-[var(--color-sdc-purple-mid)] text-white px-2 py-1 rounded-full">
+                        {action.count}
+                      </span>
+                    )}
+                  </CardTitle>
+                  <CardDescription className="text-gray-400">
+                    {action.description}
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </Link>
+          ))}
+        </div>
+
+        {/* System Status */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="card-dark border-gray-800">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center">
+                <Shield className="h-5 w-5 mr-2 text-[var(--color-sdc-purple-mid)]" />
+                Admin Status
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Email:</span>
+                  <span className="text-white">{user?.email}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Role:</span>
+                  <span className="text-[var(--color-sdc-purple-mid)]">Administrator</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Access:</span>
+                  <span className="text-green-400">Full</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="card-dark border-gray-800">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center">
+                <Database className="h-5 w-5 mr-2 text-[var(--color-sdc-blue-bright)]" />
+                Database Status
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {dbError ? (
+                <Alert className="border-red-500/50 bg-red-500/10">
+                  <AlertDescription className="text-red-400">{dbError}</AlertDescription>
+                </Alert>
+              ) : (
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                    <span className="text-gray-300">Connected to Realtime Database</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                    <span className="text-gray-300">User data accessible</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                    <span className="text-gray-300">Admin permissions active</span>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="relative z-10 mt-12 p-6 border-t border-gray-800">
+        <div className="max-w-7xl mx-auto text-center">
+          <p className="text-gray-400 text-sm">
+            © 2024 Software Development Club. Admin Portal.
+          </p>
+          <p className="text-gray-500 text-xs mt-2">
+            Administrator Access | System Version: 1.0.0
+          </p>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default AdminDashboard; 

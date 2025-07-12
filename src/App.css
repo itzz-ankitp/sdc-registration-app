@@ -189,6 +189,26 @@
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
+/* Development track selection animations */
+@keyframes track-select {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes track-glow {
+  0%, 100% { box-shadow: 0 0 5px var(--color-sdc-purple-mid); }
+  50% { box-shadow: 0 0 15px var(--color-sdc-purple-bright), 0 0 25px var(--color-sdc-blue-bright); }
+}
+
+.track-selected {
+  animation: track-select 0.3s ease-in-out;
+}
+
+.track-glow {
+  animation: track-glow 2s ease-in-out infinite;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

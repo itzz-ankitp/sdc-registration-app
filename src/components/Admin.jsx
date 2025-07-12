@@ -175,8 +175,8 @@ const Admin = () => {
               </form>
               
               <div className="mt-6 text-center">
-                <Link to="/dashboard" className="text-sm text-gray-400 hover:text-white transition-colors">
-                  ← Back to Dashboard
+                <Link to="/admin-dashboard" className="text-sm text-gray-400 hover:text-white transition-colors">
+                  ← Back to Admin Dashboard
                 </Link>
               </div>
             </CardContent>
@@ -196,9 +196,9 @@ const Admin = () => {
       {/* Header */}
       <header className="relative z-10 p-6 border-b border-gray-800">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/dashboard" className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors">
+          <Link to="/admin-dashboard" className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors">
             <ArrowLeft className="h-5 w-5" />
-            <span>Back to Dashboard</span>
+            <span>Back to Admin Dashboard</span>
           </Link>
           
           <div className="flex items-center space-x-4">
@@ -276,26 +276,48 @@ const Admin = () => {
                     <th className="py-3 px-4 text-gray-300 font-medium">Department</th>
                     <th className="py-3 px-4 text-gray-300 font-medium">Student ID</th>
                     <th className="py-3 px-4 text-gray-300 font-medium">Contact</th>
+                    <th className="py-3 px-4 text-gray-300 font-medium">Development Track</th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.length === 0 ? (
                     <tr>
-                      <td colSpan="6" className="text-center py-8 text-gray-400">
+                      <td colSpan="7" className="text-center py-8 text-gray-400">
                         {dbError ? 'Unable to load users' : 'No users found. Users will appear here once they register.'}
                       </td>
                     </tr>
                   ) : (
-                    users.map((u, i) => (
-                      <tr key={i} className="border-b border-gray-800 hover:bg-gray-800/50 transition-colors">
-                        <td className="py-3 px-4 text-white">{u.fullName || 'N/A'}</td>
-                        <td className="py-3 px-4 text-gray-300">{u.email || 'N/A'}</td>
-                        <td className="py-3 px-4 text-gray-300">Year {u.yearOfStudy || 'N/A'}</td>
-                        <td className="py-3 px-4 text-gray-300">{u.department || 'N/A'}</td>
-                        <td className="py-3 px-4 text-gray-300">{u.studentId || 'N/A'}</td>
-                        <td className="py-3 px-4 text-gray-300">{u.contactNumber || 'N/A'}</td>
-                      </tr>
-                    ))
+                    users.map((u, i) => {
+                      const getTrackLabel = (track) => {
+                        const tracks = {
+                          'android': 'Android Development',
+                          'web': 'Web Development',
+                          'ml': 'Machine Learning',
+                          'game': 'Game Development'
+                        };
+                        return tracks[track] || 'Not selected';
+                      };
+                      
+                      return (
+                        <tr key={i} className="border-b border-gray-800 hover:bg-gray-800/50 transition-colors">
+                          <td className="py-3 px-4 text-white">{u.fullName || 'N/A'}</td>
+                          <td className="py-3 px-4 text-gray-300">{u.email || 'N/A'}</td>
+                          <td className="py-3 px-4 text-gray-300">Year {u.yearOfStudy || 'N/A'}</td>
+                          <td className="py-3 px-4 text-gray-300">{u.department || 'N/A'}</td>
+                          <td className="py-3 px-4 text-gray-300">{u.studentId || 'N/A'}</td>
+                          <td className="py-3 px-4 text-gray-300">{u.contactNumber || 'N/A'}</td>
+                          <td className="py-3 px-4 text-gray-300">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              u.developmentTrack 
+                                ? 'bg-[var(--color-sdc-purple-mid)]/20 text-[var(--color-sdc-purple-mid)] border border-[var(--color-sdc-purple-mid)]/30'
+                                : 'bg-gray-700/50 text-gray-400 border border-gray-600/30'
+                            }`}>
+                              {getTrackLabel(u.developmentTrack)}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
               </table>

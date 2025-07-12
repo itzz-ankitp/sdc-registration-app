@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ArrowLeft, User, Mail, GraduationCap, Building, Phone, Save, Edit, X, Check } from 'lucide-react';
+import { ArrowLeft, User, Mail, GraduationCap, Building, Phone, Save, Edit, X, Check, Brain } from 'lucide-react';
 import sdcLogo from '../assets/sdc.png';
 
 const Profile = () => {
@@ -27,7 +27,8 @@ const Profile = () => {
     studentId: '',
     department: '',
     yearOfStudy: '',
-    contactNumber: ''
+    contactNumber: '',
+    developmentTrack: ''
   });
 
   const departments = [
@@ -43,6 +44,13 @@ const Profile = () => {
   ];
 
   const years = ['1', '2', '3', '4'];
+
+  const developmentTracks = [
+    { value: 'android', label: 'Android Development' },
+    { value: 'web', label: 'Web Development' },
+    { value: 'ml', label: 'Machine Learning' },
+    { value: 'game', label: 'Game Development' }
+  ];
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -78,7 +86,8 @@ const Profile = () => {
           studentId: data.studentId || '',
           department: data.department || '',
           yearOfStudy: data.yearOfStudy?.toString() || '',
-          contactNumber: data.contactNumber || ''
+          contactNumber: data.contactNumber || '',
+          developmentTrack: data.developmentTrack || ''
         });
       } else {
         console.log('❌ User data not found in database');
@@ -144,6 +153,10 @@ const Profile = () => {
       setError('Contact number is required');
       return false;
     }
+    if (!formData.developmentTrack) {
+      setError('Development track is required');
+      return false;
+    }
     return true;
   };
 
@@ -165,6 +178,7 @@ const Profile = () => {
         department: formData.department,
         yearOfStudy: parseInt(formData.yearOfStudy),
         contactNumber: formData.contactNumber,
+        developmentTrack: formData.developmentTrack,
         updatedAt: new Date().toISOString()
       };
 
@@ -462,6 +476,30 @@ const Profile = () => {
                     required
                   />
                 </div>
+              </div>
+
+              {/* Development Track */}
+              <div className="space-y-2">
+                <label htmlFor="developmentTrack" className="text-sm font-medium text-gray-300">
+                  Development Track *
+                </label>
+                <Select 
+                  value={formData.developmentTrack} 
+                  onValueChange={(value) => handleInputChange('developmentTrack', value)}
+                  disabled={!editing}
+                >
+                  <SelectTrigger className="input-field">
+                    <Brain className="h-4 w-4 text-gray-400 mr-2" />
+                    <SelectValue placeholder="Select your development track" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {developmentTracks.map((track) => (
+                      <SelectItem key={track.value} value={track.value}>
+                        {track.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Account Info */}
