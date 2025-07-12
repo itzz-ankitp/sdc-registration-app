@@ -261,13 +261,13 @@ const Register = () => {
                   Department *
                 </label>
                 <Select onValueChange={(value) => handleInputChange('department', value)}>
-                  <SelectTrigger className="input-field">
-                    <Building className="h-4 w-4 text-gray-400 mr-2" />
-                    <SelectValue placeholder="Select your department" />
+                  <SelectTrigger className="input-field min-h-[40px] max-w-full">
+                    <Building className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
+                    <SelectValue placeholder="Select your department" className="truncate" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-w-[300px]">
                     {departments.map((dept) => (
-                      <SelectItem key={dept} value={dept}>
+                      <SelectItem key={dept} value={dept} className="whitespace-normal break-words">
                         {dept}
                       </SelectItem>
                     ))}
@@ -280,8 +280,8 @@ const Register = () => {
                   Year of Study *
                 </label>
                 <Select onValueChange={(value) => handleInputChange('yearOfStudy', value)}>
-                  <SelectTrigger className="input-field">
-                    <GraduationCap className="h-4 w-4 text-gray-400 mr-2" />
+                  <SelectTrigger className="input-field min-h-[40px]">
+                    <GraduationCap className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
                     <SelectValue placeholder="Select year" />
                   </SelectTrigger>
                   <SelectContent>

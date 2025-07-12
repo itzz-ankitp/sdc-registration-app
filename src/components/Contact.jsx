@@ -6,16 +6,20 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ArrowLeft, Mail, User, MessageSquare, Send, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Mail, User, MessageSquare, Send, CheckCircle, Github, Menu, X } from 'lucide-react';
 import sdcLogo from '../assets/sdc.png';
+import { ref, update } from 'firebase/database';
+import { auth, realtimeDb } from '../firebase';
 
 const Contact = () => {
   const [state, handleSubmit] = useForm("mdkzqvnb");
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    githubLink: '',
     message: ''
   });
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -43,10 +47,22 @@ const Contact = () => {
     return true;
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     if (!validateForm()) {
       e.preventDefault();
       return;
+    }
+    // Write to Realtime Database if githubLink is present and user is logged in
+    const user = auth.currentUser;
+    if (user && formData.githubLink.trim()) {
+      const userRef = ref(realtimeDb, `users/${user.uid}`);
+      await update(userRef, {
+        githubLink: formData.githubLink.trim(),
+        projectDescription: formData.message.trim(),
+        submittedAt: new Date().toISOString(),
+        submissionReviewed: false,
+        graded: false
+      });
     }
     // Formspree will handle the submission
   };
@@ -77,44 +93,88 @@ const Contact = () => {
       <div className="absolute bottom-20 right-20 w-32 h-32 bg-[var(--color-sdc-blue-bright)]/5 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
 
       {/* Header */}
-      <header className="relative z-10 p-6 border-b border-gray-800">
+      <header className="relative z-10 p-4 md:p-6 border-b border-gray-800">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors">
             <ArrowLeft className="h-5 w-5" />
-            <span>Back to Dashboard</span>
+            <span className="hidden sm:inline">Back to Dashboard</span>
+            <span className="sm:hidden">Back</span>
           </Link>
           
-          <div className="flex items-center space-x-4">
-            <img src={sdcLogo} alt="SDC Logo" className="w-10 h-10" />
-            <div>
-              <h1 className="text-lg font-bold text-white">Contact Us</h1>
+          <div className="flex items-center space-x-2 md:space-x-4">
+            <img src={sdcLogo} alt="SDC Logo" className="w-8 h-8 md:w-10 md:h-10" />
+            <div className="hidden sm:block">
+              <h1 className="text-lg font-bold text-white">Submit Project / Contact Us</h1>
+            </div>
+            <div className="sm:hidden">
+              <h1 className="text-sm font-bold text-white">Submit Project</h1>
             </div>
           </div>
+
+          {/* Mobile Menu Toggle */}
+          <div className="md:hidden">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="text-gray-300 hover:text-white"
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+          </div>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden mt-4 p-4 bg-gray-900/95 rounded-lg border border-gray-700">
+            <div className="space-y-3">
+              <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-800"
+                >
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to Dashboard
+                </Button>
+              </Link>
+              <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-800"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Profile
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Main Content */}
-      <main className="relative z-10 max-w-6xl mx-auto p-6">
+      <main className="relative z-10 max-w-6xl mx-auto p-4 md:p-6">
         {/* Title Section */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 sdc-text-gradient">
-            Get in Touch
+        <div className="text-center mb-8 md:mb-12">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 sdc-text-gradient">
+            Submit Your Project
           </h2>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Have questions about SDC or need help with your registration? We're here to help!
+          <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto px-4">
+            Submit your completed development track project or get in touch with us for any questions.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
           {/* Contact Form */}
           <Card className="card-dark border-gray-800">
             <CardHeader>
               <CardTitle className="text-white flex items-center">
                 <MessageSquare className="h-5 w-5 mr-2 text-[var(--color-sdc-purple-mid)]" />
-                Send us a Message
+                Submit Project Details
               </CardTitle>
               <CardDescription className="text-gray-400">
-                Fill out the form below and we'll get back to you within 24-48 hours.
+                Submit your completed project with GitHub link and brief description, or send us a message.
               </CardDescription>
             </CardHeader>
             
@@ -135,7 +195,7 @@ const Contact = () => {
                 </Alert>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={onSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <label htmlFor="name" className="text-sm font-medium text-gray-300">
                     Your Name *
@@ -181,13 +241,31 @@ const Contact = () => {
                 </div>
 
                 <div className="space-y-2">
+                  <label htmlFor="githubLink" className="text-sm font-medium text-gray-300">
+                    GitHub Link (Optional)
+                  </label>
+                  <div className="relative">
+                    <Github className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <Input
+                      id="githubLink"
+                      name="githubLink"
+                      type="url"
+                      placeholder="https://github.com/your-repo"
+                      value={formData.githubLink}
+                      onChange={(e) => handleInputChange('githubLink', e.target.value)}
+                      className="pl-10 input-field"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
                   <label htmlFor="message" className="text-sm font-medium text-gray-300">
-                    Message *
+                    Project Description / Message *
                   </label>
                   <Textarea
                     id="message"
                     name="message"
-                    placeholder="Tell us how we can help you..."
+                    placeholder="Describe your project, technologies used, challenges faced, or ask any questions..."
                     value={formData.message}
                     onChange={(e) => handleInputChange('message', e.target.value)}
                     className="input-field min-h-[120px] resize-none"
@@ -306,6 +384,18 @@ const Contact = () => {
           </div>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="relative z-10 mt-8 md:mt-12 p-4 md:p-6 border-t border-gray-800">
+        <div className="max-w-6xl mx-auto text-center">
+          <p className="text-gray-400 text-sm">
+            © 2025 Software Development Club. All rights reserved.
+          </p>
+          <p className="text-gray-500 text-xs mt-2">
+            President: Heerath Bhat | Recruitment Status: Ongoing
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };

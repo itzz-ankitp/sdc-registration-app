@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
-import { ref, onValue, get } from 'firebase/database';
+import { ref, onValue, get, update } from 'firebase/database';
 import { auth, realtimeDb } from '../firebase';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -22,9 +22,12 @@ import {
   Globe,
   Brain,
   Gamepad2,
-  Code
+  Code,
+  Menu,
+  X
 } from 'lucide-react';
 import sdcLogo from '../assets/sdc.png';
+import { Switch } from '@/components/ui/switch';
 
 const ADMIN_UID = '0JkRLEEnv1dDEPaXaysRfchzGoT2';
 
@@ -34,6 +37,7 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [greeting, setGreeting] = useState('');
   const [dbError, setDbError] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -73,11 +77,10 @@ const AdminDashboard = () => {
     try {
       setDbError(null);
       const usersRef = ref(realtimeDb, 'users');
-      
       const snapshot = await get(usersRef);
       if (snapshot.exists()) {
         const data = snapshot.val();
-        setUsers(Object.values(data));
+        setUsers(Object.entries(data).map(([uid, user]) => ({ uid, ...user })));
       } else {
         setUsers([]);
       }
@@ -85,7 +88,7 @@ const AdminDashboard = () => {
       const unsubscribe = onValue(usersRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
-          setUsers(Object.values(data));
+          setUsers(Object.entries(data).map(([uid, user]) => ({ uid, ...user })));
         } else {
           setUsers([]);
         }
@@ -193,17 +196,22 @@ const AdminDashboard = () => {
       <div className="absolute bottom-20 left-20 w-48 h-48 bg-[var(--color-sdc-blue-bright)]/5 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
 
       {/* Header */}
-      <header className="relative z-10 p-6 border-b border-gray-800">
+      <header className="relative z-10 p-4 md:p-6 border-b border-gray-800">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <img src={sdcLogo} alt="SDC Logo" className="w-12 h-12" />
-            <div>
-              <h1 className="text-xl font-bold text-white">Software Development Club</h1>
-              <p className="text-sm text-gray-400">Admin Portal</p>
+          <div className="flex items-center space-x-2 md:space-x-4">
+            <img src={sdcLogo} alt="SDC Logo" className="w-8 h-8 md:w-12 md:h-12" />
+            <div className="hidden sm:block">
+              <h1 className="text-lg md:text-xl font-bold text-white">Software Development Club</h1>
+              <p className="text-xs md:text-sm text-gray-400">Admin Portal</p>
+            </div>
+            <div className="sm:hidden">
+              <h1 className="text-sm font-bold text-white">SDC Admin</h1>
+              <p className="text-xs text-gray-400">Portal</p>
             </div>
           </div>
           
-          <div className="flex items-center space-x-4">
+          {/* Desktop Header Actions */}
+          <div className="hidden md:flex items-center space-x-4">
             <div className="flex items-center space-x-2 text-gray-300">
               <Shield className="h-4 w-4 text-[var(--color-sdc-purple-mid)]" />
               <span className="text-sm">Administrator</span>
@@ -222,26 +230,66 @@ const AdminDashboard = () => {
               Sign Out
             </Button>
           </div>
+
+          {/* Mobile Hamburger Menu */}
+          <div className="md:hidden">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="text-gray-300 hover:text-white"
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+          </div>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden mt-4 p-4 bg-gray-900/95 rounded-lg border border-gray-700">
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2 text-gray-300 pb-2 border-b border-gray-700">
+                <Shield className="h-4 w-4 text-[var(--color-sdc-purple-mid)]" />
+                <span className="text-sm">Administrator</span>
+              </div>
+              <div className="flex items-center space-x-2 text-gray-300 pb-2 border-b border-gray-700">
+                <User className="h-4 w-4" />
+                <span className="text-sm truncate">{user?.email}</span>
+              </div>
+              <Button
+                onClick={() => {
+                  handleSignOut();
+                  setMobileMenuOpen(false);
+                }}
+                variant="ghost"
+                size="sm"
+                className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-800"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </Button>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Main Content */}
-      <main className="relative z-10 max-w-7xl mx-auto p-6">
+      <main className="relative z-10 max-w-7xl mx-auto p-4 md:p-6">
         {/* Welcome Section */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 md:mb-12">
           <div className="flex items-center justify-center mb-4">
-            <Shield className="h-6 w-6 text-[var(--color-sdc-purple-mid)] mr-2" />
-            <h2 className="text-3xl md:text-4xl font-bold text-white">
+            <Shield className="h-5 w-5 md:h-6 md:w-6 text-[var(--color-sdc-purple-mid)] mr-2" />
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white">
               {greeting}
             </h2>
           </div>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+          <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto px-4">
             Welcome to the SDC Admin Portal. Manage users, monitor system health, and oversee the registration process.
           </p>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-12">
           <Card className="card-dark border-gray-800">
             <CardContent className="p-6">
               <div className="flex items-center space-x-4">
@@ -306,7 +354,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Additional Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
           <Card className="card-dark border-gray-800">
             <CardContent className="p-6">
               <div className="flex items-center space-x-4">
@@ -352,8 +400,72 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
+        {/* Project Submissions Section */}
+        <div className="mb-8 md:mb-12">
+          <Card className="card-dark border-gray-800">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center">
+                <Code className="h-5 w-5 mr-2 text-[var(--color-sdc-purple-mid)]" />
+                Project Submissions
+              </CardTitle>
+              <CardDescription className="text-gray-400">
+                Review and grade submitted projects.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="min-w-full text-sm text-gray-300">
+                  <thead>
+                    <tr>
+                      <th className="px-2 md:px-4 py-2 text-left">Name</th>
+                      <th className="px-2 md:px-4 py-2 text-left hidden sm:table-cell">Email</th>
+                      <th className="px-2 md:px-4 py-2 text-left hidden md:table-cell">GitHub Link</th>
+                      <th className="px-2 md:px-4 py-2 text-center">Reviewed</th>
+                      <th className="px-2 md:px-4 py-2 text-center">Graded</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.filter(u => u.githubLink).map((u, idx) => (
+                      <tr key={u.uid || idx} className="border-b border-gray-700">
+                        <td className="px-2 md:px-4 py-2">{u.fullName || '-'}</td>
+                        <td className="px-2 md:px-4 py-2 hidden sm:table-cell">{u.email || '-'}</td>
+                        <td className="px-2 md:px-4 py-2 hidden md:table-cell">
+                          <a href={u.githubLink} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline">{u.githubLink}</a>
+                        </td>
+                        <td className="px-2 md:px-4 py-2 text-center">
+                          <Switch
+                            checked={!!u.submissionReviewed}
+                            onCheckedChange={async (checked) => {
+                              const userRef = ref(realtimeDb, `users/${u.uid}`);
+                              await update(userRef, { submissionReviewed: checked });
+                              loadUsers();
+                            }}
+                          />
+                        </td>
+                        <td className="px-2 md:px-4 py-2 text-center">
+                          <Switch
+                            checked={!!u.graded}
+                            onCheckedChange={async (checked) => {
+                              const userRef = ref(realtimeDb, `users/${u.uid}`);
+                              await update(userRef, { graded: checked });
+                              loadUsers();
+                            }}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {users.filter(u => u.githubLink).length === 0 && (
+                  <div className="text-gray-400 text-center py-6">No project submissions yet.</div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Admin Actions Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
           {adminActions.map((action, index) => (
             <Link key={index} to={action.link}>
               <Card className="card-dark border-gray-800 hover:border-[var(--color-sdc-purple-mid)]/50 transition-all duration-300 transform hover:scale-105 group">
@@ -379,7 +491,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* System Status */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
           <Card className="card-dark border-gray-800">
             <CardHeader>
               <CardTitle className="text-white flex items-center">
@@ -439,10 +551,10 @@ const AdminDashboard = () => {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 mt-12 p-6 border-t border-gray-800">
+      <footer className="relative z-10 mt-8 md:mt-12 p-4 md:p-6 border-t border-gray-800">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-gray-400 text-sm">
-            © 2024 Software Development Club. Admin Portal.
+            © 2025 Software Development Club. Admin Portal.
           </p>
           <p className="text-gray-500 text-xs mt-2">
             Administrator Access | System Version: 1.0.0

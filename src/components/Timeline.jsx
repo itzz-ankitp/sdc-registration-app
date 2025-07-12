@@ -1,11 +1,60 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { ref, update, get } from 'firebase/database';
+import { realtimeDb } from '../firebase';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Circle, ArrowLeft, User, Mail, FileCheck, Users } from 'lucide-react';
+import { CheckCircle, Circle, ArrowLeft, User, Mail, FileCheck, Users, Check, Menu, X } from 'lucide-react';
 import sdcLogo from '../assets/sdc.png';
 
-const Timeline = () => {
+const Timeline = ({ user }) => {
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [updating, setUpdating] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Load user data
+  useEffect(() => {
+    if (user) {
+      loadUserData();
+    }
+  }, [user]);
+
+  const loadUserData = async () => {
+    try {
+      setLoading(true);
+      const userRef = ref(realtimeDb, `users/${user.uid}`);
+      const snapshot = await get(userRef);
+      
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        setUserData(data);
+      }
+    } catch (err) {
+      console.error('Error loading user data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const markTaskAsDone = async () => {
+    try {
+      setUpdating(true);
+      const userRef = ref(realtimeDb, `users/${user.uid}`);
+      await update(userRef, {
+        taskCompleted: true,
+        taskCompletedAt: new Date().toISOString()
+      });
+
+      // Update local state
+      setUserData(prev => ({ ...prev, taskCompleted: true }));
+    } catch (err) {
+      console.error('Error marking task as done:', err);
+    } finally {
+      setUpdating(false);
+    }
+  };
+
   const timelineSteps = [
     {
       id: 1,
@@ -18,30 +67,42 @@ const Timeline = () => {
     },
     {
       id: 2,
-      title: 'Fill Registration Form',
-      description: 'Complete your detailed registration with academic information',
+      title: 'Select Development Track',
+      description: 'Choose your preferred development track (Android, Web, ML, or Game Dev)',
       icon: FileCheck,
-      status: 'completed',
-      link: '/register',
-      details: 'Provide your student ID, department, year of study, and contact information.'
+      status: userData?.developmentTrack ? 'completed' : 'current',
+      link: '/dashboard',
+      details: 'Select from Android Development, Web Development, Machine Learning, or Game Development tracks.'
     },
     {
       id: 3,
-      title: 'Email Verification',
-      description: 'Check your email for verification and confirmation',
+      title: 'Complete Assigned Task',
+      description: 'Work on your development track assignment and complete the project',
       icon: Mail,
-      status: 'current',
-      link: null,
-      details: 'We will send you a confirmation email with further instructions and next steps.'
+      status: userData?.taskCompleted ? 'completed' : (userData?.developmentTrack ? 'current' : 'pending'),
+      link: '/user-tasks',
+      details: 'Follow the detailed requirements and guidelines for your selected development track.'
     },
     {
       id: 4,
-      title: 'Confirmation & Welcome',
-      description: 'Receive welcome message and join our community',
+      title: 'Submit Project Details',
+      description: userData?.submissionReviewed 
+        ? 'Results of the round will be out soon!' 
+        : (userData?.githubLink 
+          ? 'Your submission is under review.' 
+          : 'Submit your project with GitHub link and brief description'),
       icon: Users,
-      status: 'pending',
-      link: null,
-      details: 'Get access to our Discord server, upcoming events, and start your SDC journey!'
+      status: userData?.submissionReviewed 
+        ? 'completed' 
+        : (userData?.githubLink 
+          ? 'current' 
+          : (userData?.taskCompleted ? 'current' : 'pending')),
+      link: '/contact',
+      details: userData?.submissionReviewed 
+        ? 'Your project has been reviewed and graded. Results will be announced soon!' 
+        : (userData?.githubLink 
+          ? 'Your project submission is currently being reviewed by our team.' 
+          : 'Submit your completed project details, GitHub repository link, and project description via the form.')
     }
   ];
 
@@ -75,36 +136,80 @@ const Timeline = () => {
       <div className="absolute bottom-40 left-40 w-24 h-24 bg-[var(--color-sdc-blue-bright)]/5 rounded-full animate-float" style={{animationDelay: '3s'}}></div>
 
       {/* Header */}
-      <header className="relative z-10 p-6 border-b border-gray-800">
+      <header className="relative z-10 p-4 md:p-6 border-b border-gray-800">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors">
             <ArrowLeft className="h-5 w-5" />
-            <span>Back to Dashboard</span>
+            <span className="hidden sm:inline">Back to Dashboard</span>
+            <span className="sm:hidden">Back</span>
           </Link>
           
-          <div className="flex items-center space-x-4">
-            <img src={sdcLogo} alt="SDC Logo" className="w-10 h-10" />
-            <div>
+          <div className="flex items-center space-x-2 md:space-x-4">
+            <img src={sdcLogo} alt="SDC Logo" className="w-8 h-8 md:w-10 md:h-10" />
+            <div className="hidden sm:block">
               <h1 className="text-lg font-bold text-white">Registration Timeline</h1>
             </div>
+            <div className="sm:hidden">
+              <h1 className="text-sm font-bold text-white">Timeline</h1>
+            </div>
+          </div>
+
+          {/* Mobile Menu Toggle */}
+          <div className="md:hidden">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="text-gray-300 hover:text-white"
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden mt-4 p-4 bg-gray-900/95 rounded-lg border border-gray-700">
+            <div className="space-y-3">
+              <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-800"
+                >
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to Dashboard
+                </Button>
+              </Link>
+              <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-800"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Profile
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Main Content */}
-      <main className="relative z-10 max-w-4xl mx-auto p-6">
+      <main className="relative z-10 max-w-4xl mx-auto p-4 md:p-6">
         {/* Title Section */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 sdc-text-gradient">
+        <div className="text-center mb-8 md:mb-12">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 sdc-text-gradient">
             Registration Process
           </h2>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+          <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto px-4">
             Follow these steps to complete your SDC registration and join our community of developers.
           </p>
         </div>
 
         {/* Timeline */}
-        <div className="space-y-8">
+        <div className="space-y-6 md:space-y-8">
           {timelineSteps.map((step, index) => (
             <div key={step.id} className="relative">
               {/* Connecting line */}
@@ -144,7 +249,8 @@ const Timeline = () => {
                       <p className="text-gray-300 mb-3">{step.description}</p>
                       <p className="text-sm text-gray-400 mb-4">{step.details}</p>
                       
-                      {step.link && (
+                      {/* Only show default Go to Step for steps other than 3 */}
+                      {step.link && step.id !== 3 && (
                         <Link to={step.link}>
                           <Button 
                             size="sm" 
@@ -156,7 +262,40 @@ const Timeline = () => {
                         </Link>
                       )}
                       
-                      {step.status === 'current' && !step.link && (
+                      {/* Mark as Done button for task completion step */}
+                      {step.id === 3 && step.status === 'current' && userData?.developmentTrack && (
+                        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                          <Link to={step.link}>
+                            <Button 
+                              size="sm" 
+                              className="w-full sm:w-auto btn-primary"
+                            >
+                              Go to Task
+                            </Button>
+                          </Link>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="w-full sm:w-auto border-green-500 text-green-400 hover:bg-green-500/10"
+                            onClick={markTaskAsDone}
+                            disabled={updating}
+                          >
+                            {updating ? (
+                              <>
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-400 mr-2"></div>
+                                Marking...
+                              </>
+                            ) : (
+                              <>
+                                <Check className="h-4 w-4 mr-2" />
+                                Mark as Done
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      )}
+                      
+                      {step.status === 'current' && !step.link && step.id !== 3 && (
                         <div className="flex items-center space-x-2 text-sm text-[var(--color-sdc-purple-mid)]">
                           <Circle className="h-4 w-4 animate-spin" />
                           <span>In Progress - Check your email</span>
@@ -171,7 +310,7 @@ const Timeline = () => {
         </div>
 
         {/* Additional Information */}
-        <Card className="card-dark border-gray-800 mt-12">
+        <Card className="card-dark border-gray-800 mt-8 md:mt-12">
           <CardHeader>
             <CardTitle className="text-white flex items-center">
               <Users className="h-5 w-5 mr-2 text-[var(--color-sdc-blue-bright)]" />
@@ -222,6 +361,18 @@ const Timeline = () => {
           </CardContent>
         </Card>
       </main>
+
+      {/* Footer */}
+      <footer className="relative z-10 mt-8 md:mt-12 p-4 md:p-6 border-t border-gray-800">
+        <div className="max-w-4xl mx-auto text-center">
+          <p className="text-gray-400 text-sm">
+            © 2025 Software Development Club. All rights reserved.
+          </p>
+          <p className="text-gray-500 text-xs mt-2">
+            President: Heerath Bhat | Recruitment Status: Ongoing
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };

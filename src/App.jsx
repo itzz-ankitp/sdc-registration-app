@@ -81,7 +81,7 @@ function App() {
           />
           <Route 
             path="/timeline" 
-            element={user ? <Timeline /> : <Navigate to="/login" />} 
+            element={user ? <Timeline user={user} /> : <Navigate to="/login" />} 
           />
           <Route 
             path="/contact" 

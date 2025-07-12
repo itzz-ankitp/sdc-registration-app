@@ -1,40 +1,30 @@
 # SDC Registration Portal
 
-A professional, award-winning web application for the Software Development Club (SDC) registration system. Built with React, TypeScript, Firebase, and modern web technologies.
+A professional web application for the Software Development Club (SDC) registration system. Built with React, Firebase Authentication, and Realtime Database.
 
-## 🚀 Features
+## 🚀 Live Demo
 
-- **Modern Authentication**: Secure user registration and login with Firebase Auth
-- **Professional Design**: Dark theme with SDC brand colors and smooth animations
-- **Comprehensive Registration**: Detailed form with validation for student information
-- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
-- **Real-time Database**: Firebase Firestore for secure data storage
-- **Cloud Functions**: Backend logic for chatbot and email functionality
-- **Progressive Web App**: Fast loading and optimized performance
+**[Click here to view the live application](https://sdc-registration-app.vercel.app)**
 
 ## 🛠 Tech Stack
 
-- **Frontend**: React 18, TypeScript, Vite
-- **Styling**: Tailwind CSS, Custom CSS with SDC branding
-- **UI Components**: shadcn/ui, Lucide React icons
-- **Animation**: Framer Motion
-- **Backend**: Firebase (Auth, Firestore, Cloud Functions)
-- **Routing**: React Router DOM
-- **Package Manager**: pnpm
+- **Frontend**: React 18, Vite
+- **Styling**: Tailwind CSS, shadcn/ui components
+- **Backend**: Firebase (Authentication, Realtime Database)
+- **Deployment**: Vercel
 
 ## 📋 Prerequisites
 
 - Node.js 18.0.0 or higher
 - pnpm (recommended) or npm
 - Firebase account and project
-- Git for version control
 
 ## 🚀 Quick Start
 
 ### 1. Clone and Install
 
 ```bash
-git clone <sdc-registration-app>
+git clone https://github.com/itzz-ankitp/sdc-registration-app.git
 cd sdc-registration-app
 pnpm install
 ```
@@ -51,15 +41,15 @@ VITE_FIREBASE_PROJECT_ID="your_project_id"
 VITE_FIREBASE_STORAGE_BUCKET="your_project.firebasestorage.app"
 VITE_FIREBASE_MESSAGING_SENDER_ID="your_sender_id"
 VITE_FIREBASE_APP_ID="your_app_id"
-VITE_FIREBASE_MEASUREMENT_ID="your_measurement_id"
+VITE_FIREBASE_DATABASE_URL="your_realtime_database_url"
 ```
 
 ### 3. Firebase Setup
 
 1. Create a Firebase project at [Firebase Console](https://console.firebase.google.com/)
 2. Enable Authentication with Email/Password
-3. Create a Firestore database
-4. Set up Cloud Functions (optional)
+3. Create a Realtime Database
+4. Set up security rules for the database
 
 ### 4. Development Server
 
@@ -79,109 +69,80 @@ sdc-registration-app/
 │   │   ├── Login.jsx       # Login page
 │   │   ├── Register.jsx    # Registration form
 │   │   ├── Dashboard.jsx   # User dashboard
+│   │   ├── AdminDashboard.jsx # Admin dashboard
 │   │   ├── Timeline.jsx    # Registration timeline
 │   │   ├── Contact.jsx     # Contact form
-│   │   └── About.jsx       # About page
-│   ├── assets/             # Static assets
+│   │   ├── About.jsx       # About page
+│   │   ├── Profile.jsx     # User profile
+│   │   └── UserTasks.jsx   # User tasks
+│   ├── assets/             # Static assets (images, logos)
 │   ├── firebase.js         # Firebase configuration
 │   ├── App.jsx            # Main app component
 │   ├── App.css            # Custom styles
 │   └── main.jsx           # Entry point
-├── functions/              # Firebase Cloud Functions
 ├── public/                # Public assets
-├── .env                   # Environment variables
-└── package.json          # Dependencies
+├── .env                   # Environment variables (place here)
+├── package.json          # Dependencies
+└── firebase.json         # Firebase configuration
 ```
 
-## 🎨 Design System
+## 🎯 Features
 
-The application uses a custom design system based on the SDC brand:
+- **User Registration & Authentication**: Secure signup/login with Firebase Auth
+- **Development Track Selection**: Choose from Android, Web, ML, or Game Dev tracks
+- **Task Management**: View and complete tasks based on selected track
+- **Progress Tracking**: Timeline showing registration progress
+- **Admin Dashboard**: Manage users, view statistics, and review submissions
+- **Profile Management**: View and edit user profile information
+- **Responsive Design**: Works on desktop, tablet, and mobile devices
+- **Project Submission**: Submit GitHub links and project descriptions
 
-- **Primary Colors**: Purple gradients (#8E2DE2, #4A00E0)
-- **Accent Color**: Bright blue (#00F0FF)
-- **Background**: Deep dark (#0A0A0A)
-- **Typography**: Inter font family
-- **Components**: Custom styled with Tailwind CSS
+## 🔄 Usage Workflow
 
-## 🔧 Available Scripts
+### For Students:
+1. **Register**: Create account with student details
+2. **Select Track**: Choose development track (Android/Web/ML/Game Dev)
+3. **Complete Tasks**: View and complete assigned tasks
+4. **Submit Project**: Upload GitHub link and project description
+5. **Track Progress**: Monitor timeline and submission status
 
-```bash
-# Development
-pnpm run dev              # Start development server
-pnpm run dev --host       # Start with network access
+### For Admins:
+1. **Access Admin Dashboard**: Use admin credentials
+2. **View Statistics**: See user counts and track distributions
+3. **Manage Users**: View all registered users and their details
+4. **Review Submissions**: Mark submissions as reviewed and graded
+5. **Monitor Progress**: Track overall registration progress
 
-# Building
-pnpm run build           # Build for production
-pnpm run preview         # Preview production build
+## 🔐 Admin Access
 
-# Linting
-pnpm run lint            # Run ESLint
-
-# Firebase
-firebase deploy          # Deploy to Firebase
-firebase emulators:start # Start local emulators
-```
-
-## 🔐 Security Features
-
-- Environment variables for sensitive configuration
-- Firebase security rules for data protection
-- Client-side and server-side form validation
-- Secure authentication with Firebase Auth
-- Protected routes and user session management
-
-## 📱 Responsive Design
-
-The application is fully responsive and tested on:
-- Desktop (1920px+)
-- Laptop (1024px - 1919px)
-- Tablet (768px - 1023px)
-- Mobile (320px - 767px)
+For admin credentials and access, please contact: **itsme.ankit2006@gmail.com**
 
 ## 🚀 Deployment
 
-### Firebase Hosting
+### Vercel Deployment
 
 ```bash
 # Build the application
 pnpm run build
 
-# Deploy to Firebase
-firebase deploy
+# Deploy to Vercel
+vercel --prod
 ```
 
-### Manual Deployment
+### Available Scripts
 
-1. Build the application: `pnpm run build`
-2. Upload the `dist` folder to your hosting provider
-3. Configure your server to serve `index.html` for all routes
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/new-feature`
-3. Commit changes: `git commit -am 'Add new feature'`
-4. Push to branch: `git push origin feature/new-feature`
-5. Submit a pull request
-
-## 👥 Team
-
-- **President**: Heerath Bhat
-- **Development**: Piratla Ankit Rama Datt
+```bash
+pnpm run dev              # Start development server
+pnpm run build           # Build for production
+pnpm run preview         # Preview production build
+pnpm run lint            # Run ESLint
+```
 
 ## 📞 Support
 
 For support and questions:
 - Email: itsme.ankit2006@gmail.com
-
-## 🎯 Roadmap
-
-- [ ] AI Chatbot integration with Gemini API
-- [ ] Email notifications with SendGrid
-- [ ] 3D animations and interactive elements
-- [ ] Mobile app version
-- [ ] Advanced analytics dashboard
-- [ ] Multi-language support
+- GitHub: [itzz-ankitp/sdc-registration-app](https://github.com/itzz-ankitp/sdc-registration-app)
 
 ---
 
