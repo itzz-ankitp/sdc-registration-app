@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm, ValidationError } from '@formspree/react';
 import { Button } from '@/components/ui/button';
@@ -47,25 +47,30 @@ const Contact = () => {
     return true;
   };
 
-  const onSubmit = async (e) => {
-    if (!validateForm()) {
-      e.preventDefault();
-      return;
+  // Update Firebase when form is successfully submitted
+  useEffect(() => {
+    if (state.succeeded) {
+      const user = auth.currentUser;
+      if (user && formData.githubLink.trim()) {
+        const updateFirebase = async () => {
+          try {
+            const userRef = ref(realtimeDb, `users/${user.uid}`);
+            await update(userRef, {
+              githubLink: formData.githubLink.trim(),
+              projectDescription: formData.message.trim(),
+              submittedAt: new Date().toISOString(),
+              submissionReviewed: false,
+              graded: false
+            });
+            console.log('Firebase updated successfully');
+          } catch (error) {
+            console.error('Error updating database:', error);
+          }
+        };
+        updateFirebase();
+      }
     }
-    // Write to Realtime Database if githubLink is present and user is logged in
-    const user = auth.currentUser;
-    if (user && formData.githubLink.trim()) {
-      const userRef = ref(realtimeDb, `users/${user.uid}`);
-      await update(userRef, {
-        githubLink: formData.githubLink.trim(),
-        projectDescription: formData.message.trim(),
-        submittedAt: new Date().toISOString(),
-        submissionReviewed: false,
-        graded: false
-      });
-    }
-    // Formspree will handle the submission
-  };
+  }, [state.succeeded, formData.githubLink, formData.message]);
 
   const contactInfo = [
     {
@@ -195,7 +200,7 @@ const Contact = () => {
                 </Alert>
               )}
 
-              <form onSubmit={onSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <label htmlFor="name" className="text-sm font-medium text-gray-300">
                     Your Name *
