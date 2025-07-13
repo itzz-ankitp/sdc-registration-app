@@ -22,6 +22,7 @@ import FirebaseTest from './components/FirebaseTest';
 import DataRecovery from './components/DataRecovery';
 import Tasks from './components/Tasks';
 import UserTasks from './components/UserTasks';
+import FormspreeTest from './components/FormspreeTest';
 
 // Admin UID constant
 const ADMIN_UID = '0JkRLEEnv1dDEPaXaysRfchzGoT2';
@@ -73,6 +74,7 @@ function App() {
           <Route path="/data-recovery" element={<DataRecovery />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/user-tasks" element={<UserTasks />} />
+          <Route path="/formspree-test" element={<FormspreeTest />} />
           
           {/* Protected routes */}
           <Route 

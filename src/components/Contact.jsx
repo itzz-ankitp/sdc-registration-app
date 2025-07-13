@@ -12,7 +12,9 @@ import { ref, update } from 'firebase/database';
 import { auth, realtimeDb } from '../firebase';
 
 const Contact = () => {
-  const [state, handleSubmit] = useForm("mdkzqvnb");
+  // TODO: Replace this with your actual Formspree form ID
+  // Go to https://formspree.io/forms/new to create a new form
+  const [state, handleSubmit] = useForm("xrgjqjqj"); // Temporary test form ID
   const [formData, setFormData] = useState({
     name: '',
     email: '',
