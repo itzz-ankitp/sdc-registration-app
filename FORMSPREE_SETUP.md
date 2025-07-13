@@ -7,7 +7,7 @@
 - ✅ Added proper validation and error handling
 
 ## 📋 **Current Configuration:**
-Your contact form is now using the Formspree React package with form ID: `mdkzqvnb`
+Your contact form is now using the Formspree React package with form ID: `xkgzwgaz`
 
 ## 🧪 **Testing Your Form:**
 1. Start your development server: `npm run dev`
@@ -38,7 +38,7 @@ Your contact form is now using the Formspree React package with form ID: `mdkzqv
 - View form analytics
 
 ## 🚨 **Troubleshooting:**
-- **Form not submitting**: Check that the form ID `mdkzqvnb` is correct
+- **Form not submitting**: Check that the form ID `xkgzwgaz` is correct
 - **No email received**: Check your spam folder and Formspree dashboard
 - **Validation errors**: Make sure all required fields are filled
 - **Package errors**: Run `npm install @formspree/react --legacy-peer-deps` if needed
@@ -46,6 +46,6 @@ Your contact form is now using the Formspree React package with form ID: `mdkzqv
 ## 🔄 **If You Need to Change the Form ID:**
 1. Go to your Formspree dashboard
 2. Create a new form or copy the ID from an existing form
-3. Update the `useForm("YOUR_NEW_FORM_ID")` in `src/components/Contact.jsx`
+3. Update the `useForm("YOUR_NEW_FORM_ID")` in `src/components/Contact.jsx` and `src/components/FormspreeTest.jsx`
 
 Your contact form is now fully functional with Formspree! 🎉 

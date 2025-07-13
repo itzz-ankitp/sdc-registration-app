@@ -116,9 +116,9 @@ const Register = () => {
 
       // Update user profile
       try {
-        await updateProfile(userCredential.user, {
-          displayName: formData.fullName
-        });
+      await updateProfile(userCredential.user, {
+        displayName: formData.fullName
+      });
       } catch (profileErr) {
         console.error('Profile update error:', profileErr);
       }
@@ -139,15 +139,15 @@ const Register = () => {
         });
         
         await dbSet(dbRef(realtimeDb, `users/${userCredential.user.uid}`), {
-          fullName: formData.fullName,
-          email: formData.email,
-          studentId: formData.studentId,
-          department: formData.department,
-          yearOfStudy: parseInt(formData.yearOfStudy),
-          contactNumber: formData.contactNumber,
+        fullName: formData.fullName,
+        email: formData.email,
+        studentId: formData.studentId,
+        department: formData.department,
+        yearOfStudy: parseInt(formData.yearOfStudy),
+        contactNumber: formData.contactNumber,
           createdAt: new Date().toISOString(),
-          registrationComplete: true
-        });
+        registrationComplete: true
+      });
         
         console.log('✅ Successfully wrote to Realtime Database');
       } catch (realtimeErr) {

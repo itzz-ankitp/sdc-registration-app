@@ -12,67 +12,42 @@ import { ref, update } from 'firebase/database';
 import { auth, realtimeDb } from '../firebase';
 
 const Contact = () => {
-  // TODO: Replace this with your actual Formspree form ID
-  // Go to https://formspree.io/forms/new to create a new form
-  const [state, handleSubmit] = useForm("xrgjqjqj"); // Temporary test form ID
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    githubLink: '',
-    message: ''
-  });
+  const [state, handleSubmit] = useForm("xkgzwgaz");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const validateForm = () => {
-    if (!formData.name.trim()) {
-      return false;
-    }
-    if (!formData.email.trim()) {
-      return false;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      return false;
-    }
-    if (!formData.message.trim()) {
-      return false;
-    }
-    if (formData.message.trim().length < 10) {
-      return false;
-    }
-    return true;
-  };
+  // Remove custom validation - let Formspree handle it
 
   // Update Firebase when form is successfully submitted
   useEffect(() => {
     if (state.succeeded) {
       const user = auth.currentUser;
-      if (user && formData.githubLink.trim()) {
-        const updateFirebase = async () => {
-          try {
-            const userRef = ref(realtimeDb, `users/${user.uid}`);
-            await update(userRef, {
-              githubLink: formData.githubLink.trim(),
-              projectDescription: formData.message.trim(),
-              submittedAt: new Date().toISOString(),
-              submissionReviewed: false,
-              graded: false
-            });
-            console.log('Firebase updated successfully');
-          } catch (error) {
-            console.error('Error updating database:', error);
-          }
-        };
-        updateFirebase();
+      // Get form data from the form submission
+      const form = document.querySelector('form');
+      if (form && user) {
+        const formData = new FormData(form);
+        const githubLink = formData.get('githubLink');
+        
+        if (githubLink && githubLink.trim()) {
+          const updateFirebase = async () => {
+            try {
+              const userRef = ref(realtimeDb, `users/${user.uid}`);
+              await update(userRef, {
+                githubLink: githubLink.trim(),
+                projectDescription: formData.get('message') || '',
+                submittedAt: new Date().toISOString(),
+                submissionReviewed: false,
+                graded: false
+              });
+              console.log('Firebase updated successfully');
+            } catch (error) {
+              console.error('Error updating database:', error);
+            }
+          };
+          updateFirebase();
+        }
       }
     }
-  }, [state.succeeded, formData.githubLink, formData.message]);
+  }, [state.succeeded]);
 
   const contactInfo = [
     {
@@ -214,12 +189,16 @@ const Contact = () => {
                       name="name"
                       type="text"
                       placeholder="Enter your full name"
-                      value={formData.name}
-                      onChange={(e) => handleInputChange('name', e.target.value)}
                       className="pl-10 input-field"
                       required
                     />
                   </div>
+                  <ValidationError 
+                    prefix="Name" 
+                    field="name"
+                    errors={state.errors}
+                    className="text-red-400 text-sm"
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -233,8 +212,6 @@ const Contact = () => {
                       name="email"
                       type="email"
                       placeholder="Enter your email address"
-                      value={formData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
                       className="pl-10 input-field"
                       required
                     />
@@ -258,8 +235,6 @@ const Contact = () => {
                       name="githubLink"
                       type="url"
                       placeholder="https://github.com/your-repo"
-                      value={formData.githubLink}
-                      onChange={(e) => handleInputChange('githubLink', e.target.value)}
                       className="pl-10 input-field"
                     />
                   </div>
@@ -273,14 +248,9 @@ const Contact = () => {
                     id="message"
                     name="message"
                     placeholder="Describe your project, technologies used, challenges faced, or ask any questions..."
-                    value={formData.message}
-                    onChange={(e) => handleInputChange('message', e.target.value)}
                     className="input-field min-h-[120px] resize-none"
                     required
                   />
-                  <p className="text-xs text-gray-500">
-                    {formData.message.length}/500 characters
-                  </p>
                   <ValidationError 
                     prefix="Message" 
                     field="message"
@@ -290,7 +260,7 @@ const Contact = () => {
                 </div>
 
                 {/* Hidden field for custom subject */}
-                <input type="hidden" name="_subject" value={`SDC Contact Form - ${formData.name}`} />
+                <input type="hidden" name="_subject" value="SDC Contact Form Submission" />
 
                 <Button
                   type="submit"
