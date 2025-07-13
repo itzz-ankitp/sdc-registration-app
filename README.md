@@ -4,7 +4,7 @@ A professional web application for the Software Development Club (SDC) registrat
 
 ## 🚀 Live Demo
 
-**[Click here to view the live application](https://sdc-registration-app.vercel.app)**
+**[Click here to view the application](https://sdc-registration-app.vercel.app)**
 
 ## 🛠 Tech Stack
 
@@ -26,7 +26,7 @@ A professional web application for the Software Development Club (SDC) registrat
 ```bash
 git clone https://github.com/itzz-ankitp/sdc-registration-app.git
 cd sdc-registration-app
-pnpm install
+npm install --force
 ```
 
 ### 2. Environment Setup
@@ -54,7 +54,7 @@ VITE_FIREBASE_DATABASE_URL="your_realtime_database_url"
 ### 4. Development Server
 
 ```bash
-pnpm run dev
+npm run dev
 ```
 
 Visit `http://localhost:5173` to see the application.
@@ -123,19 +123,10 @@ For admin credentials and access, please contact: **itsme.ankit2006@gmail.com**
 
 ```bash
 # Build the application
-pnpm run build
+npm run build
 
 # Deploy to Vercel
 vercel --prod
-```
-
-### Available Scripts
-
-```bash
-pnpm run dev              # Start development server
-pnpm run build           # Build for production
-pnpm run preview         # Preview production build
-pnpm run lint            # Run ESLint
 ```
 
 ## 📞 Support
