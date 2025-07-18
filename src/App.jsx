@@ -52,7 +52,22 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-[var(--color-sdc-dark)]">
+      <div className="relative min-h-screen bg-[var(--color-sdc-dark)] overflow-hidden">
+        {/* Hexagon SVG Background */}
+        <svg
+          className="fixed top-0 left-0 w-screen h-screen pointer-events-none z-0"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ opacity: 0.10 }}
+        >
+          <defs>
+            <pattern id="hexPattern" width="80" height="92" patternUnits="userSpaceOnUse">
+              <polygon points="40,6 75,27 75,65 40,86 5,65 5,27" fill="none" stroke="#7C3AED" strokeWidth="2" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#hexPattern)" />
+        </svg>
+        {/* Main App Content */}
         <Routes>
           {/* Public routes */}
           <Route 
@@ -75,7 +90,6 @@ function App() {
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/user-tasks" element={<UserTasks />} />
           <Route path="/formspree-test" element={<FormspreeTest />} />
-          
           {/* Protected routes */}
           <Route 
             path="/dashboard" 
@@ -89,7 +103,6 @@ function App() {
             path="/contact" 
             element={user ? <Contact /> : <Navigate to="/login" />} 
           />
-          
           {/* Default route */}
           <Route 
             path="/" 

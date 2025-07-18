@@ -168,8 +168,6 @@ const Dashboard = ({ user }) => {
     <div className="min-h-screen bg-[var(--color-sdc-dark)] relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-sdc-purple-dark)]/10 via-transparent to-[var(--color-sdc-blue-bright)]/10"></div>
-      <div className="absolute top-20 right-20 w-64 h-64 bg-[var(--color-sdc-purple-mid)]/5 rounded-full animate-float"></div>
-      <div className="absolute bottom-20 left-20 w-48 h-48 bg-[var(--color-sdc-blue-bright)]/5 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
 
       {/* Header */}
       <header className="relative z-10 p-4 md:p-6 border-b border-gray-800">

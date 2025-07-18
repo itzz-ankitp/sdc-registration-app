@@ -49,12 +49,8 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-sdc-purple-dark)]/20 via-transparent to-[var(--color-sdc-blue-bright)]/20"></div>
-      
-      {/* Animated background elements */}
-      <div className="absolute top-20 left-20 w-32 h-32 bg-[var(--color-sdc-purple-mid)]/10 rounded-full animate-float"></div>
-      <div className="absolute bottom-20 right-20 w-24 h-24 bg-[var(--color-sdc-blue-bright)]/10 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
+      {/* Background elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-sdc-purple-dark)]/10 via-transparent to-[var(--color-sdc-blue-bright)]/10"></div>
       
       <Card className="w-full max-w-md relative z-10 card-dark border-gray-800">
         <CardHeader className="text-center">
