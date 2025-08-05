@@ -181,9 +181,6 @@ const Tasks = () => {
 
   return (
     <div className="min-h-screen bg-[var(--color-sdc-dark)] relative overflow-hidden">
-      {/* Background elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-sdc-purple-dark)]/10 via-transparent to-[var(--color-sdc-blue-bright)]/10"></div>
-
       {/* Main Content */}
       <div className="relative z-10 max-w-7xl mx-auto p-6">
         {/* Back Button */}

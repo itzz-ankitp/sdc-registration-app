@@ -1,10 +1,23 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 const MigrateUsers = () => {
   return (
-    <div className="min-h-screen bg-[var(--color-sdc-dark)] p-6">
-      <div className="max-w-2xl mx-auto">
+    <div className="min-h-screen p-6 relative">
+      <div className="max-w-2xl mx-auto relative z-10">
+        {/* Back to Admin Dashboard Button */}
+        <div className="mb-6">
+          <Link to="/admin-dashboard">
+            <Button variant="outline" className="border-gray-700 text-gray-300 hover:bg-gray-800">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Admin Dashboard
+            </Button>
+          </Link>
+        </div>
+
         <Card className="card-dark border-gray-800">
           <CardHeader>
             <CardTitle className="text-white">Migration Complete</CardTitle>

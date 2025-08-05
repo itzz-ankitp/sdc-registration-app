@@ -191,8 +191,8 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-[var(--color-sdc-dark)] relative overflow-hidden">
       {/* Background elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-sdc-purple-dark)]/10 via-transparent to-[var(--color-sdc-blue-bright)]/10"></div>
 
+      <div className="container mx-auto px-4 py-8 relative z-10">
       {/* Header */}
       <header className="relative z-10 p-4 md:p-6 border-b border-gray-800">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -559,6 +559,7 @@ const AdminDashboard = () => {
           </p>
         </div>
       </footer>
+      </div>
     </div>
   );
 };

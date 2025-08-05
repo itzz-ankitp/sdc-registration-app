@@ -50,7 +50,6 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-sdc-purple-dark)]/10 via-transparent to-[var(--color-sdc-blue-bright)]/10"></div>
       
       <Card className="w-full max-w-md relative z-10 card-dark border-gray-800">
         <CardHeader className="text-center">

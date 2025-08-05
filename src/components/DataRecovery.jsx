@@ -5,6 +5,8 @@ import { auth, realtimeDb } from '../firebase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 const DataRecovery = () => {
   const [user, setUser] = useState(null);
@@ -98,19 +100,20 @@ const DataRecovery = () => {
     setSuccess('');
 
     try {
-      const rootSnapshot = await get(ref(realtimeDb, '/'));
-      const rootData = rootSnapshot.val();
+      // Check if users node exists
+      const usersRef = ref(realtimeDb, 'users');
+      const usersSnapshot = await get(usersRef);
       
-      console.log('Database root structure:', rootData);
-      
-      if (rootData && rootData.users) {
-        const userCount = Object.keys(rootData.users).length;
-        setSuccess(`✅ Database structure looks good. Found ${userCount} users.`);
+      if (usersSnapshot.exists()) {
+        const users = usersSnapshot.val();
+        const userCount = Object.keys(users).length;
+        setSuccess(`✅ Users node exists with ${userCount} users`);
+        console.log('Users in database:', users);
       } else {
-        setError('❌ No users node found in database');
+        setError('❌ Users node does not exist');
       }
     } catch (err) {
-      setError(`Error checking database: ${err.message}`);
+      setError(`Error checking database structure: ${err.message}`);
     }
   };
 
@@ -132,8 +135,18 @@ const DataRecovery = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--color-sdc-dark)] p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen p-6 relative">
+      <div className="max-w-4xl mx-auto relative z-10">
+        {/* Back to Admin Dashboard Button */}
+        <div className="mb-6">
+          <Link to="/admin-dashboard">
+            <Button variant="outline" className="border-gray-700 text-gray-300 hover:bg-gray-800">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Admin Dashboard
+            </Button>
+          </Link>
+        </div>
+
         <Card className="card-dark border-gray-800 mb-6">
           <CardHeader>
             <CardTitle className="text-white">Data Recovery Tool</CardTitle>
