@@ -14,6 +14,7 @@ import { auth, realtimeDb } from '../firebase';
 const Contact = () => {
   const [state, handleSubmit] = useForm("xkgzwgaz");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [formType, setFormType] = useState('project'); // 'project' or 'contact'
 
   // Remove custom validation - let Formspree handle it
 
@@ -57,7 +58,7 @@ const Contact = () => {
     },
     {
       title: 'Email',
-      value: 'sdc@university.edu',
+      value: 'sdcmvjce@gmail.com',
       icon: Mail
     },
     {
@@ -135,30 +136,64 @@ const Contact = () => {
 
         {/* Main Content */}
         <main className="relative z-10 max-w-6xl mx-auto p-4 md:p-6">
+          {/* Form Type Toggle */}
+          <div className="flex justify-center mb-8">
+            <div className="bg-gray-800 rounded-lg p-1 flex">
+              <button
+                onClick={() => setFormType('project')}
+                className={`px-6 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                  formType === 'project'
+                    ? 'bg-[var(--color-sdc-purple-mid)] text-white shadow-lg'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                Submit Project
+              </button>
+              <button
+                onClick={() => setFormType('contact')}
+                className={`px-6 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                  formType === 'contact'
+                    ? 'bg-[var(--color-sdc-purple-mid)] text-white shadow-lg'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                Contact Us
+              </button>
+            </div>
+          </div>
+
           {/* Title Section */}
           <div className="text-center mb-8 md:mb-12">
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 sdc-text-gradient">
-              Submit Your Project
+              {formType === 'project' ? 'Submit Your Project' : 'Contact Us'}
             </h2>
             <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto px-4">
-              Submit your completed development track project or get in touch with us for any questions.
+              {formType === 'project' 
+                ? 'Submit your completed development track project with all necessary details.'
+                : 'Get in touch with us for any questions or inquiries.'
+              }
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-            {/* Contact Form */}
-            <Card className="card-dark border-gray-800">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-start">
+            {/* Form */}
+            <Card className={`card-dark border-gray-800 transition-all duration-300 ${
+              formType === 'project' ? 'lg:h-[700px]' : 'lg:h-[500px]'
+            }`}>
               <CardHeader>
                 <CardTitle className="text-white flex items-center">
                   <MessageSquare className="h-5 w-5 mr-2 text-[var(--color-sdc-purple-mid)]" />
-                  Submit Project Details
+                  {formType === 'project' ? 'Submit Project Details' : 'Contact Form'}
                 </CardTitle>
                 <CardDescription className="text-gray-400">
-                  Submit your completed project with GitHub link and brief description, or send us a message.
+                  {formType === 'project' 
+                    ? 'Submit your completed project with GitHub link and project description.'
+                    : 'Send us a message and we\'ll get back to you soon.'
+                  }
                 </CardDescription>
               </CardHeader>
               
-              <CardContent>
+              <CardContent className="flex flex-col h-full">
                 {state.errors && state.errors.length > 0 && (
                   <Alert className="mb-4 border-red-500/50 bg-red-500/10">
                     <AlertDescription className="text-red-400">
@@ -175,7 +210,8 @@ const Contact = () => {
                   </Alert>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4 flex-1 flex flex-col">
+                  {/* Name Field - Required for both forms */}
                   <div className="space-y-2">
                     <label htmlFor="name" className="text-sm font-medium text-gray-300">
                       Your Name *
@@ -199,6 +235,7 @@ const Contact = () => {
                     />
                   </div>
 
+                  {/* Email Field - Required for both forms */}
                   <div className="space-y-2">
                     <label htmlFor="email" className="text-sm font-medium text-gray-300">
                       Email Address *
@@ -222,44 +259,83 @@ const Contact = () => {
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <label htmlFor="githubLink" className="text-sm font-medium text-gray-300">
-                      GitHub Link (Optional)
-                    </label>
-                    <div className="relative">
-                      <Github className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="githubLink"
-                        name="githubLink"
-                        type="url"
-                        placeholder="https://github.com/your-repo"
-                        className="pl-10 input-field"
-                      />
-                    </div>
-                  </div>
+                  {/* Project-specific fields */}
+                  {formType === 'project' && (
+                    <>
+                      {/* GitHub Link - Required for project submission */}
+                      <div className="space-y-2">
+                        <label htmlFor="githubLink" className="text-sm font-medium text-gray-300">
+                          GitHub Link *
+                        </label>
+                        <div className="relative">
+                          <Github className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                          <Input
+                            id="githubLink"
+                            name="githubLink"
+                            type="url"
+                            placeholder="https://github.com/your-repo"
+                            className="pl-10 input-field"
+                            required
+                          />
+                        </div>
+                        <ValidationError 
+                          prefix="GitHub Link" 
+                          field="githubLink"
+                          errors={state.errors}
+                          className="text-red-400 text-sm"
+                        />
+                      </div>
 
+                      {/* Live URL - Optional for project submission */}
+                      <div className="space-y-2">
+                        <label htmlFor="liveUrl" className="text-sm font-medium text-gray-300">
+                          Live URL / Demo Link (Optional)
+                        </label>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                          <Input
+                            id="liveUrl"
+                            name="liveUrl"
+                            type="url"
+                            placeholder="https://your-project-demo.com"
+                            className="pl-10 input-field"
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {/* Message/Description Field */}
                   <div className="space-y-2">
                     <label htmlFor="message" className="text-sm font-medium text-gray-300">
-                      Project Description / Message *
+                      {formType === 'project' ? 'Project Description *' : 'Message *'}
                     </label>
                     <Textarea
                       id="message"
                       name="message"
-                      placeholder="Describe your project, technologies used, challenges faced, or ask any questions..."
+                      placeholder={formType === 'project' 
+                        ? "Describe your project, technologies used, challenges faced, and key features..."
+                        : "Your message (minimum 10 characters)..."
+                      }
                       className="input-field min-h-[120px] resize-none"
                       required
+                      minLength={formType === 'contact' ? 10 : undefined}
                     />
                     <ValidationError 
-                      prefix="Message" 
+                      prefix={formType === 'project' ? "Project Description" : "Message"} 
                       field="message"
                       errors={state.errors}
                       className="text-red-400 text-sm"
                     />
+                    {formType === 'contact' && (
+                      <p className="text-xs text-gray-500">Message must be at least 10 characters long.</p>
+                    )}
                   </div>
 
                   {/* Hidden field for custom subject */}
-                  <input type="hidden" name="_subject" value="SDC Contact Form Submission" />
+                  <input type="hidden" name="_subject" value={formType === 'project' ? "SDC Project Submission" : "SDC Contact Form"} />
 
+                  <div className="flex-1"></div>
                   <Button
                     type="submit"
                     className="w-full btn-primary"
@@ -273,7 +349,7 @@ const Contact = () => {
                     ) : (
                       <>
                         <Send className="h-4 w-4 mr-2" />
-                        Send Message
+                        {formType === 'project' ? 'Submit Project' : 'Send Message'}
                       </>
                     )}
                   </Button>
@@ -311,25 +387,7 @@ const Contact = () => {
                 </CardContent>
               </Card>
 
-              <Card className="card-dark border-gray-800">
-                <CardHeader>
-                  <CardTitle className="text-white">Available Roles</CardTitle>
-                  <CardDescription className="text-gray-400">
-                    We're currently recruiting for these positions:
-                  </CardDescription>
-                </CardHeader>
-                
-                <CardContent>
-                  <div className="space-y-3">
-                    {['Tech Team Member', 'Design Team Member', 'Social Media Team Member', 'Content Team Member'].map((role, index) => (
-                      <div key={index} className="flex items-center space-x-3">
-                        <CheckCircle className="h-4 w-4 text-green-400" />
-                        <span className="text-gray-300">{role}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+
 
               <Card className="card-dark border-gray-800">
                 <CardHeader>

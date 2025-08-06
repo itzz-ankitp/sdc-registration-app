@@ -449,12 +449,26 @@ const Dashboard = ({ user }) => {
               {/* Submission status message */}
               {userData?.githubLink && !userData?.submissionReviewed && (
                 <div className="mb-3 p-3 rounded bg-yellow-900/30 text-yellow-300 text-sm">
-                  Your submission is under review.
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+                    <span>Your submission is under review. This process may take a few days.</span>
+                  </div>
                 </div>
               )}
-              {userData?.submissionReviewed && (
+              {userData?.submissionReviewed && !userData?.graded && (
+                <div className="mb-3 p-3 rounded bg-blue-900/30 text-blue-300 text-sm">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                    <span>Your project has been reviewed! Grading is currently in progress.</span>
+                  </div>
+                </div>
+              )}
+              {userData?.submissionReviewed && userData?.graded && (
                 <div className="mb-3 p-3 rounded bg-green-900/30 text-green-300 text-sm">
-                  Your submission has been reviewed and graded. Stay tuned for the results!
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                    <span>Your submission has been reviewed and graded! Final results will be announced soon.</span>
+                  </div>
                 </div>
               )}
               <div className="space-y-3">
