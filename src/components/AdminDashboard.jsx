@@ -286,116 +286,97 @@ const AdminDashboard = () => {
           </p>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-12">
-          <Card className="card-dark border-gray-800">
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-[var(--color-sdc-purple-mid)] to-[var(--color-sdc-purple-bright)] flex items-center justify-center">
-                  <Users className="h-6 w-6 text-white" />
+        {/* Stats Cards - Total Users + 2x2 Dev Grid */}
+        <div className="flex flex-col lg:flex-row gap-4 md:gap-6 mb-8 md:mb-12 h-full">
+          {/* Total Users Card - Takes 1/3 width on large screens */}
+          <div className="lg:w-1/3 lg:flex-shrink-0">
+            <Card className="card-dark border-gray-800 h-full min-h-[400px] lg:min-h-[500px]">
+              <CardContent className="p-6 flex flex-col justify-center h-full">
+                <div className="flex flex-col items-center space-y-4">
+                  <div className="w-16 h-16 rounded-lg bg-gradient-to-r from-[var(--color-sdc-purple-mid)] to-[var(--color-sdc-purple-bright)] flex items-center justify-center">
+                    <Users className="h-8 w-8 text-white" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-4xl font-bold text-white">{users.length}</p>
+                    <p className="text-gray-400 text-lg">Total Users</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-2xl font-bold text-white">{users.length}</p>
-                  <p className="text-gray-400">Total Users</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
 
-          <Card className="card-dark border-gray-800">
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center">
-                  <Smartphone className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-white">
-                    {users.filter(u => u.developmentTrack === 'android').length}
-                  </p>
-                  <p className="text-gray-400">Android Dev</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Dev Cards Grid - Takes 2/3 width on large screens */}
+          <div className="lg:w-2/3 lg:flex-grow">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-full">
+              {/* Android Dev */}
+              <Card className="card-dark border-gray-800 h-full min-h-[200px] lg:min-h-[240px]">
+                <CardContent className="p-6 flex flex-col justify-center h-full">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center">
+                      <Smartphone className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-white">
+                        {users.filter(u => u.developmentTrack === 'android').length}
+                      </p>
+                      <p className="text-gray-400">Android Dev</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-          <Card className="card-dark border-gray-800">
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
-                  <Globe className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-white">
-                    {users.filter(u => u.developmentTrack === 'web').length}
-                  </p>
-                  <p className="text-gray-400">Web Dev</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              {/* Web Dev */}
+              <Card className="card-dark border-gray-800 h-full min-h-[200px] lg:min-h-[240px]">
+                <CardContent className="p-6 flex flex-col justify-center h-full">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
+                      <Globe className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-white">
+                        {users.filter(u => u.developmentTrack === 'web').length}
+                      </p>
+                      <p className="text-gray-400">Web Dev</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-          <Card className="card-dark border-gray-800">
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center">
-                  <Brain className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-white">
-                    {users.filter(u => u.developmentTrack === 'ml').length}
-                  </p>
-                  <p className="text-gray-400">ML Dev</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              {/* ML Dev */}
+              <Card className="card-dark border-gray-800 h-full min-h-[200px] lg:min-h-[240px]">
+                <CardContent className="p-6 flex flex-col justify-center h-full">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center">
+                      <Brain className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-white">
+                        {users.filter(u => u.developmentTrack === 'ml').length}
+                      </p>
+                      <p className="text-gray-400">ML Dev</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-        {/* Additional Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
-          <Card className="card-dark border-gray-800">
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 flex items-center justify-center">
-                  <Gamepad2 className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-white">
-                    {users.filter(u => u.developmentTrack === 'game').length}
-                  </p>
-                  <p className="text-gray-400">Game Dev</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="card-dark border-gray-800">
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-[var(--color-sdc-blue-bright)] to-[var(--color-sdc-purple-mid)] flex items-center justify-center">
-                  <BarChart3 className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-white">Active</p>
-                  <p className="text-gray-400">System Status</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="card-dark border-gray-800">
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-[var(--color-sdc-purple-bright)] to-[var(--color-sdc-blue-bright)] flex items-center justify-center">
-                  <Shield className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-white">Admin</p>
-                  <p className="text-gray-400">Access Level</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              {/* Game Dev */}
+              <Card className="card-dark border-gray-800 h-full min-h-[200px] lg:min-h-[240px]">
+                <CardContent className="p-6 flex flex-col justify-center h-full">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 flex items-center justify-center">
+                      <Gamepad2 className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-white">
+                        {users.filter(u => u.developmentTrack === 'game').length}
+                      </p>
+                      <p className="text-gray-400">Game Dev</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
 
         {/* Project Submissions Section */}
@@ -418,6 +399,7 @@ const AdminDashboard = () => {
                       <th className="px-2 md:px-4 py-2 text-left">Name</th>
                       <th className="px-2 md:px-4 py-2 text-left hidden sm:table-cell">Email</th>
                       <th className="px-2 md:px-4 py-2 text-left hidden md:table-cell">GitHub Link</th>
+                      <th className="px-2 md:px-4 py-2 text-center">Track</th>
                       <th className="px-2 md:px-4 py-2 text-center">Reviewed</th>
                       <th className="px-2 md:px-4 py-2 text-center">Graded</th>
                     </tr>
@@ -431,11 +413,31 @@ const AdminDashboard = () => {
                           <a href={u.githubLink} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline">{u.githubLink}</a>
                         </td>
                         <td className="px-2 md:px-4 py-2 text-center">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            u.developmentTrack === 'android' ? 'bg-green-500/20 text-green-400' :
+                            u.developmentTrack === 'web' ? 'bg-blue-500/20 text-blue-400' :
+                            u.developmentTrack === 'ml' ? 'bg-purple-500/20 text-purple-400' :
+                            u.developmentTrack === 'game' ? 'bg-orange-500/20 text-orange-400' :
+                            'bg-gray-500/20 text-gray-400'
+                          }`}>
+                            {u.developmentTrack === 'android' ? 'Android' :
+                             u.developmentTrack === 'web' ? 'Web' :
+                             u.developmentTrack === 'ml' ? 'ML' :
+                             u.developmentTrack === 'game' ? 'Game' :
+                             u.developmentTrack || '-'}
+                          </span>
+                        </td>
+                        <td className="px-2 md:px-4 py-2 text-center">
                           <Switch
                             checked={!!u.submissionReviewed}
                             onCheckedChange={async (checked) => {
                               const userRef = ref(realtimeDb, `users/${u.uid}`);
-                              await update(userRef, { submissionReviewed: checked });
+                              // If reviewed is being turned off, automatically turn off graded
+                              const updates = { submissionReviewed: checked };
+                              if (!checked && u.graded) {
+                                updates.graded = false;
+                              }
+                              await update(userRef, updates);
                               loadUsers();
                             }}
                           />
@@ -443,6 +445,7 @@ const AdminDashboard = () => {
                         <td className="px-2 md:px-4 py-2 text-center">
                           <Switch
                             checked={!!u.graded}
+                            disabled={!u.submissionReviewed}
                             onCheckedChange={async (checked) => {
                               const userRef = ref(realtimeDb, `users/${u.uid}`);
                               await update(userRef, { graded: checked });
@@ -463,10 +466,10 @@ const AdminDashboard = () => {
         </div>
 
         {/* Admin Actions Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
           {adminActions.map((action, index) => (
             <Link key={index} to={action.link}>
-              <Card className="card-dark border-gray-800 hover:border-[var(--color-sdc-purple-mid)]/50 transition-all duration-300 transform hover:scale-105 group">
+              <Card className="card-dark border-gray-800 hover:border-[var(--color-sdc-purple-mid)]/50 transition-all duration-300 transform hover:scale-105 group h-full min-h-[200px]">
                 <CardHeader>
                   <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${action.color} flex items-center justify-center mb-4 group-hover:animate-pulse-glow`}>
                     <action.icon className="h-6 w-6 text-white" />
