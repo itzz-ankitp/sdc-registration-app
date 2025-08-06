@@ -22,6 +22,7 @@ import DataRecovery from './components/DataRecovery';
 import Tasks from './components/Tasks';
 import UserTasks from './components/UserTasks';
 import FormspreeTest from './components/FormspreeTest';
+import ProjectSubmissionDetail from './components/ProjectSubmissionDetail';
 
 // Admin UID constant
 const ADMIN_UID = '0JkRLEEnv1dDEPaXaysRfchzGoT2';
@@ -151,6 +152,7 @@ const AppContent = () => {
         <Route path="/tasks" element={<Tasks />} />
         <Route path="/user-tasks" element={<UserTasks />} />
         <Route path="/formspree-test" element={<FormspreeTest />} />
+        <Route path="/project-submission/:uid" element={<ProjectSubmissionDetail />} />
         {/* Protected routes */}
         <Route 
           path="/dashboard" 

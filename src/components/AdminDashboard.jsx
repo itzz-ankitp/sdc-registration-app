@@ -24,7 +24,8 @@ import {
   Gamepad2,
   Code,
   Menu,
-  X
+  X,
+  MessageSquare
 } from 'lucide-react';
 import sdcLogo from '../assets/sdc.png';
 import { Switch } from '@/components/ui/switch';
@@ -403,6 +404,7 @@ const AdminDashboard = () => {
                       <th className="px-2 md:px-4 py-2 text-center">Track</th>
                       <th className="px-2 md:px-4 py-2 text-center">Reviewed</th>
                       <th className="px-2 md:px-4 py-2 text-center">Graded</th>
+                      <th className="px-2 md:px-4 py-2 text-center">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -460,6 +462,14 @@ const AdminDashboard = () => {
                               loadUsers();
                             }}
                           />
+                        </td>
+                        <td className="px-2 md:px-4 py-2 text-center">
+                          <Link to={`/project-submission/${u.uid}`}>
+                            <Button size="sm" variant="outline" className="border-blue-500 text-blue-400 hover:bg-blue-500/10">
+                              <MessageSquare className="h-3 w-3 mr-1" />
+                              View Message
+                            </Button>
+                          </Link>
                         </td>
                       </tr>
                     ))}
