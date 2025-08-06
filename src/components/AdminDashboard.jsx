@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import { ref, onValue, get, update } from 'firebase/database';
 import { auth, realtimeDb } from '../firebase';
@@ -39,6 +39,7 @@ const AdminDashboard = () => {
   const [greeting, setGreeting] = useState('');
   const [dbError, setDbError] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [expandedRows, setExpandedRows] = useState(new Set());
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -112,6 +113,16 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error('Error signing out:', error);
     }
+  };
+
+  const toggleRowExpansion = (uid) => {
+    const newExpandedRows = new Set(expandedRows);
+    if (newExpandedRows.has(uid)) {
+      newExpandedRows.delete(uid);
+    } else {
+      newExpandedRows.add(uid);
+    }
+    setExpandedRows(newExpandedRows);
   };
 
   const adminActions = [
@@ -300,10 +311,10 @@ const AdminDashboard = () => {
                   <div className="text-center">
                     <p className="text-4xl font-bold text-white">{users.length}</p>
                     <p className="text-gray-400 text-lg">Total Users</p>
-                  </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </CardContent>
+          </Card>
           </div>
 
           {/* Dev Cards Grid - Takes 2/3 width on large screens */}
@@ -312,72 +323,72 @@ const AdminDashboard = () => {
               {/* Android Dev */}
               <Card className="card-dark border-gray-800 h-full min-h-[200px] lg:min-h-[240px]">
                 <CardContent className="p-6 flex flex-col justify-center h-full">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center">
-                      <Smartphone className="h-6 w-6 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-white">
-                        {users.filter(u => u.developmentTrack === 'android').length}
-                      </p>
-                      <p className="text-gray-400">Android Dev</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center">
+                  <Smartphone className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-white">
+                    {users.filter(u => u.developmentTrack === 'android').length}
+                  </p>
+                  <p className="text-gray-400">Android Dev</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
               {/* Web Dev */}
               <Card className="card-dark border-gray-800 h-full min-h-[200px] lg:min-h-[240px]">
                 <CardContent className="p-6 flex flex-col justify-center h-full">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
-                      <Globe className="h-6 w-6 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-white">
-                        {users.filter(u => u.developmentTrack === 'web').length}
-                      </p>
-                      <p className="text-gray-400">Web Dev</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
+                  <Globe className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-white">
+                    {users.filter(u => u.developmentTrack === 'web').length}
+                  </p>
+                  <p className="text-gray-400">Web Dev</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
               {/* ML Dev */}
               <Card className="card-dark border-gray-800 h-full min-h-[200px] lg:min-h-[240px]">
                 <CardContent className="p-6 flex flex-col justify-center h-full">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center">
-                      <Brain className="h-6 w-6 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-white">
-                        {users.filter(u => u.developmentTrack === 'ml').length}
-                      </p>
-                      <p className="text-gray-400">ML Dev</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center">
+                  <Brain className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-white">
+                    {users.filter(u => u.developmentTrack === 'ml').length}
+                  </p>
+                  <p className="text-gray-400">ML Dev</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
               {/* Game Dev */}
               <Card className="card-dark border-gray-800 h-full min-h-[200px] lg:min-h-[240px]">
                 <CardContent className="p-6 flex flex-col justify-center h-full">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 flex items-center justify-center">
-                      <Gamepad2 className="h-6 w-6 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-white">
-                        {users.filter(u => u.developmentTrack === 'game').length}
-                      </p>
-                      <p className="text-gray-400">Game Dev</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 flex items-center justify-center">
+                  <Gamepad2 className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-white">
+                    {users.filter(u => u.developmentTrack === 'game').length}
+                  </p>
+                  <p className="text-gray-400">Game Dev</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+                </div>
+              </div>
         </div>
 
         {/* Project Submissions Section */}
@@ -397,82 +408,188 @@ const AdminDashboard = () => {
                 <table className="min-w-full text-sm text-gray-300">
                   <thead>
                     <tr>
-                      <th className="px-2 md:px-4 py-2 text-left">Name</th>
-                      <th className="px-2 md:px-4 py-2 text-left hidden sm:table-cell">Email</th>
-                      <th className="px-2 md:px-4 py-2 text-left hidden md:table-cell">GitHub Link</th>
-                      <th className="px-2 md:px-4 py-2 text-left hidden lg:table-cell">Live Link</th>
-                      <th className="px-2 md:px-4 py-2 text-center">Track</th>
-                      <th className="px-2 md:px-4 py-2 text-center">Reviewed</th>
-                      <th className="px-2 md:px-4 py-2 text-center">Graded</th>
-                      <th className="px-2 md:px-4 py-2 text-center">Actions</th>
+                      <th className="px-1 md:px-2 py-2 text-left">Name</th>
+                      <th className="px-1 md:px-2 py-2 text-left hidden sm:table-cell">Email</th>
+                      <th className="px-1 md:px-2 py-2 text-center">Track</th>
+                      <th className="px-1 md:px-2 py-2 text-center hidden md:table-cell">Reviewed</th>
+                      <th className="px-1 md:px-2 py-2 text-center hidden md:table-cell">Graded</th>
+                      <th className="px-1 md:px-2 py-2 text-center">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {users.filter(u => u.githubLink).map((u, idx) => (
-                      <tr key={u.uid || idx} className="border-b border-gray-700">
-                        <td className="px-2 md:px-4 py-2">{u.fullName || '-'}</td>
-                        <td className="px-2 md:px-4 py-2 hidden sm:table-cell">{u.email || '-'}</td>
-                        <td className="px-2 md:px-4 py-2 hidden md:table-cell">
-                          <a href={u.githubLink} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline">{u.githubLink}</a>
+                    {users.filter(u => u.githubLink).map((u, idx) => {
+                      const isExpanded = expandedRows.has(u.uid);
+                      return (
+                        <React.Fragment key={u.uid || idx}>
+                          <tr 
+                            key={u.uid || idx} 
+                            className={`border-b border-gray-700 cursor-pointer transition-colors ${
+                              isExpanded ? 'bg-gray-800/50' : 'hover:bg-gray-800/30'
+                            }`}
+                            onClick={() => toggleRowExpansion(u.uid)}
+                          >
+                            <td className="px-1 md:px-2 py-2">{u.fullName || '-'}</td>
+                            <td className="px-1 md:px-2 py-2 hidden sm:table-cell">{u.email || '-'}</td>
+                            <td className="px-1 md:px-2 py-2 text-center">
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                u.developmentTrack === 'android' ? 'bg-green-500/20 text-green-400' :
+                                u.developmentTrack === 'web' ? 'bg-blue-500/20 text-blue-400' :
+                                u.developmentTrack === 'ml' ? 'bg-purple-500/20 text-purple-400' :
+                                u.developmentTrack === 'game' ? 'bg-orange-500/20 text-orange-400' :
+                                'bg-gray-500/20 text-gray-400'
+                              }`}>
+                                {u.developmentTrack === 'android' ? 'Android' :
+                                 u.developmentTrack === 'web' ? 'Web' :
+                                 u.developmentTrack === 'ml' ? 'ML' :
+                                 u.developmentTrack === 'game' ? 'Game' :
+                                 u.developmentTrack || '-'}
+                              </span>
                         </td>
-                        <td className="px-2 md:px-4 py-2 hidden lg:table-cell">
-                          {u.liveUrl ? (
-                            <a href={u.liveUrl} target="_blank" rel="noopener noreferrer" className="text-green-400 underline">{u.liveUrl}</a>
-                          ) : (
-                            <span className="text-gray-500">N/A</span>
-                          )}
-                        </td>
-                        <td className="px-2 md:px-4 py-2 text-center">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            u.developmentTrack === 'android' ? 'bg-green-500/20 text-green-400' :
-                            u.developmentTrack === 'web' ? 'bg-blue-500/20 text-blue-400' :
-                            u.developmentTrack === 'ml' ? 'bg-purple-500/20 text-purple-400' :
-                            u.developmentTrack === 'game' ? 'bg-orange-500/20 text-orange-400' :
-                            'bg-gray-500/20 text-gray-400'
-                          }`}>
-                            {u.developmentTrack === 'android' ? 'Android' :
-                             u.developmentTrack === 'web' ? 'Web' :
-                             u.developmentTrack === 'ml' ? 'ML' :
-                             u.developmentTrack === 'game' ? 'Game' :
-                             u.developmentTrack || '-'}
-                          </span>
-                        </td>
-                        <td className="px-2 md:px-4 py-2 text-center">
+                            <td className="px-1 md:px-2 py-2 text-center hidden md:table-cell">
                           <Switch
                             checked={!!u.submissionReviewed}
                             onCheckedChange={async (checked) => {
                               const userRef = ref(realtimeDb, `users/${u.uid}`);
-                              // If reviewed is being turned off, automatically turn off graded
-                              const updates = { submissionReviewed: checked };
-                              if (!checked && u.graded) {
-                                updates.graded = false;
-                              }
-                              await update(userRef, updates);
+                                  // If reviewed is being turned off, automatically turn off graded
+                                  const updates = { submissionReviewed: checked };
+                                  if (!checked && u.graded) {
+                                    updates.graded = false;
+                                  }
+                                  await update(userRef, updates);
                               loadUsers();
                             }}
                           />
                         </td>
-                        <td className="px-2 md:px-4 py-2 text-center">
+                            <td className="px-1 md:px-2 py-2 text-center hidden md:table-cell">
                           <Switch
                             checked={!!u.graded}
-                            disabled={!u.submissionReviewed}
+                                disabled={!u.submissionReviewed}
                             onCheckedChange={async (checked) => {
                               const userRef = ref(realtimeDb, `users/${u.uid}`);
                               await update(userRef, { graded: checked });
                               loadUsers();
                             }}
                           />
-                        </td>
-                        <td className="px-2 md:px-4 py-2 text-center">
-                          <Link to={`/project-submission/${u.uid}`}>
-                            <Button size="sm" variant="outline" className="border-blue-500 text-blue-400 hover:bg-blue-500/10">
-                              <MessageSquare className="h-3 w-3 mr-1" />
-                              View Message
-                            </Button>
-                          </Link>
+                            </td>
+                            <td className="px-1 md:px-2 py-2 text-center">
+                              <Button 
+                                size="sm" 
+                                variant="outline" 
+                                className="border-gray-600 text-gray-400 hover:bg-gray-700"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleRowExpansion(u.uid);
+                                }}
+                              >
+                                {isExpanded ? 'Hide Details' : 'View Details'}
+                              </Button>
+                            </td>
+                          </tr>
+                          {/* Expanded Details Row */}
+                          {isExpanded && (
+                            <tr key={`${u.uid}-details`} className="border-b border-gray-700">
+                              <td colSpan="6" className="px-4 py-4 bg-gray-900/50">
+                                <div className="space-y-6">
+                                  {/* Student Information */}
+                                  <div>
+                                    <h4 className="text-sm font-medium text-gray-400 mb-3 flex items-center">
+                                      <User className="h-4 w-4 mr-2" />
+                                      Student Information
+                                    </h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <div>
+                                        <p className="text-xs text-gray-500">Year of Study</p>
+                                        <p className="text-white text-sm">{u.yearOfStudy || 'Not provided'}</p>
+                                      </div>
+                                      <div>
+                                        <p className="text-xs text-gray-500">Department</p>
+                                        <p className="text-white text-sm">{u.department || 'Not provided'}</p>
+                                      </div>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                                      <div>
+                                        <p className="text-xs text-gray-500">Submission Time</p>
+                                        <p className="text-white text-sm">
+                                          {u.submittedAt ? new Date(u.submittedAt).toLocaleString('en-US', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            second: '2-digit'
+                                          }) : 'Not available'}
+                                        </p>
+                                      </div>
+                                      <div>
+                                        <p className="text-xs text-gray-500">Status</p>
+                                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                          u.submissionReviewed && u.graded ? 'bg-green-500/20 text-green-400' :
+                                          u.submissionReviewed ? 'bg-blue-500/20 text-blue-400' :
+                                          'bg-yellow-500/20 text-yellow-400'
+                                        }`}>
+                                          {u.submissionReviewed && u.graded ? 'Reviewed & Graded' :
+                                           u.submissionReviewed ? 'Reviewed' :
+                                           'Under Review'}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Project Links */}
+                                  <div>
+                                    <h4 className="text-sm font-medium text-gray-400 mb-3 flex items-center">
+                                      <Code className="h-4 w-4 mr-2" />
+                                      Project Links
+                                    </h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <div>
+                                        <p className="text-xs text-gray-500 mb-1">GitHub Repository</p>
+                                        <a 
+                                          href={u.githubLink} 
+                                          target="_blank" 
+                                          rel="noopener noreferrer" 
+                                          className="text-blue-400 hover:text-blue-300 underline text-sm break-all"
+                                        >
+                                          {u.githubLink}
+                                        </a>
+                                      </div>
+                                      <div>
+                                        <p className="text-xs text-gray-500 mb-1">Live Demo</p>
+                                        {u.liveUrl ? (
+                                          <a 
+                                            href={u.liveUrl} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer" 
+                                            className="text-green-400 hover:text-green-300 underline text-sm break-all"
+                                          >
+                                            {u.liveUrl}
+                                          </a>
+                                        ) : (
+                                          <span className="text-gray-500 text-sm">Not provided</span>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Project Description */}
+                                  <div>
+                                    <h4 className="text-sm font-medium text-gray-400 mb-3 flex items-center">
+                                      <MessageSquare className="h-4 w-4 mr-2" />
+                                      Project Description
+                                    </h4>
+                                    <div className="bg-gray-800/50 rounded p-3">
+                                      <p className="text-gray-300 text-sm whitespace-pre-wrap">
+                                        {u.projectDescription || 'No project description provided.'}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
                         </td>
                       </tr>
-                    ))}
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
                   </tbody>
                 </table>
                 {users.filter(u => u.githubLink).length === 0 && (

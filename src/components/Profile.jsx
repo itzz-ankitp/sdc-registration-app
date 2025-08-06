@@ -33,14 +33,16 @@ const Profile = () => {
 
   const departments = [
     'Computer Science Engineering',
-    'Information Technology',
-    'Electronics & Communication',
-    'Electrical Engineering',
+    'Computer Science and Engineering (Data Science)',
+    'Computer Science and Design',
+    'Artificial Intelligence and Machine Learning',
+    'Information Science Engineering',
+    'Electrical and Electronics Engineering',
+    'Electronics and Communication Engineering',
+    'Electronics and Communication Engineering-VLSI',
+    'Electronics and Communication Engineering-Advanced Communication Technology',
     'Mechanical Engineering',
     'Civil Engineering',
-    'Chemical Engineering',
-    'Biotechnology',
-    'Other'
   ];
 
   const years = ['1', '2', '3', '4'];
@@ -415,13 +417,13 @@ const Profile = () => {
                     onValueChange={(value) => handleInputChange('department', value)}
                     disabled={!editing}
                   >
-                    <SelectTrigger className="input-field">
-                      <Building className="h-4 w-4 text-gray-400 mr-2" />
-                      <SelectValue placeholder="Select your department" />
+                    <SelectTrigger className="input-field min-h-[40px] max-w-full">
+                      <Building className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
+                      <SelectValue placeholder="Select your department" className="truncate" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-w-[300px]">
                       {departments.map((dept) => (
-                        <SelectItem key={dept} value={dept}>
+                        <SelectItem key={dept} value={dept} className="whitespace-normal break-words">
                           {dept}
                         </SelectItem>
                       ))}
@@ -481,9 +483,9 @@ const Profile = () => {
                 <Select 
                   value={formData.developmentTrack} 
                   onValueChange={(value) => handleInputChange('developmentTrack', value)}
-                  disabled={!editing}
+                  disabled={!editing || userData?.githubLink}
                 >
-                  <SelectTrigger className="input-field">
+                  <SelectTrigger className={`input-field ${userData?.githubLink ? 'bg-gray-700/50 text-gray-300' : ''}`}>
                     <Brain className="h-4 w-4 text-gray-400 mr-2" />
                     <SelectValue placeholder="Select your development track" />
                   </SelectTrigger>
@@ -495,6 +497,11 @@ const Profile = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                {userData?.githubLink && (
+                  <p className="text-xs text-yellow-400">
+                    Track selection is locked after project submission
+                  </p>
+                )}
               </div>
 
               {/* Account Info */}

@@ -21,8 +21,8 @@ import FirebaseTest from './components/FirebaseTest';
 import DataRecovery from './components/DataRecovery';
 import Tasks from './components/Tasks';
 import UserTasks from './components/UserTasks';
-import FormspreeTest from './components/FormspreeTest';
-import ProjectSubmissionDetail from './components/ProjectSubmissionDetail';
+
+
 
 // Admin UID constant
 const ADMIN_UID = '0JkRLEEnv1dDEPaXaysRfchzGoT2';
@@ -129,50 +129,50 @@ const AppContent = () => {
   return (
     <div className={`relative min-h-screen overflow-hidden ${!isAuthPage ? 'bg-[var(--color-sdc-dark)]' : ''}`}>
       <Background />
-      {/* Main App Content */}
-      <Routes>
-        {/* Public routes */}
-        <Route 
-          path="/login" 
-          element={user ? <Navigate to="/dashboard" /> : <Login />} 
-        />
-        <Route 
-          path="/register" 
-          element={user ? <Navigate to="/dashboard" /> : <Register />} 
-        />
-        <Route path="/about" element={<About />} />
-        <Route path="/terms" element={<TermsAndConditions />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/migrate-users" element={<MigrateUsers />} />
-        <Route path="/database-test" element={<DatabaseTest />} />
-        <Route path="/firebase-test" element={<FirebaseTest />} />
-        <Route path="/data-recovery" element={<DataRecovery />} />
-        <Route path="/tasks" element={<Tasks />} />
-        <Route path="/user-tasks" element={<UserTasks />} />
-        <Route path="/formspree-test" element={<FormspreeTest />} />
-        <Route path="/project-submission/:uid" element={<ProjectSubmissionDetail />} />
-        {/* Protected routes */}
-        <Route 
-          path="/dashboard" 
-          element={user ? <Dashboard user={user} /> : <Navigate to="/login" />} 
-        />
-        <Route 
-          path="/timeline" 
-          element={user ? <Timeline user={user} /> : <Navigate to="/login" />} 
-        />
-        <Route 
-          path="/contact" 
-          element={user ? <Contact /> : <Navigate to="/login" />} 
-        />
-        {/* Default route */}
-        <Route 
-          path="/" 
-          element={user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} 
-        />
-      </Routes>
-    </div>
+        {/* Main App Content */}
+        <Routes>
+          {/* Public routes */}
+          <Route 
+            path="/login" 
+            element={user ? <Navigate to="/dashboard" /> : <Login />} 
+          />
+          <Route 
+            path="/register" 
+            element={user ? <Navigate to="/dashboard" /> : <Register />} 
+          />
+          <Route path="/about" element={<About />} />
+          <Route path="/terms" element={<TermsAndConditions />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/migrate-users" element={<MigrateUsers />} />
+          <Route path="/database-test" element={<DatabaseTest />} />
+          <Route path="/firebase-test" element={<FirebaseTest />} />
+          <Route path="/data-recovery" element={<DataRecovery />} />
+          <Route path="/tasks" element={<Tasks />} />
+          <Route path="/user-tasks" element={<UserTasks />} />
+  
+
+          {/* Protected routes */}
+          <Route 
+            path="/dashboard" 
+            element={user ? <Dashboard user={user} /> : <Navigate to="/login" />} 
+          />
+          <Route 
+            path="/timeline" 
+            element={user ? <Timeline user={user} /> : <Navigate to="/login" />} 
+          />
+          <Route 
+            path="/contact" 
+            element={user ? <Contact /> : <Navigate to="/login" />} 
+          />
+          {/* Default route */}
+          <Route 
+            path="/" 
+            element={user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} 
+          />
+        </Routes>
+      </div>
   );
 };
 
