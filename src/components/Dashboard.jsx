@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { LogOut, Clock, User, Calendar, MessageCircle, Users, Smartphone, Globe, Brain, Gamepad2, Save, Code, Menu, X } from 'lucide-react';
+import { LogOut, Clock, User, Calendar, MessageCircle, Users, Smartphone, Globe, Brain, Gamepad2, Save, Code, Menu, X, CheckCircle } from 'lucide-react';
 import sdcLogo from '../assets/sdc.png';
 
 const Dashboard = ({ user }) => {
@@ -298,6 +298,17 @@ const Dashboard = ({ user }) => {
                 <AlertDescription className="text-red-400">{error}</AlertDescription>
               </Alert>
             )}
+            
+            {userData?.githubLink && (
+              <Alert className="mb-4 border-yellow-500/50 bg-yellow-500/10">
+                <AlertDescription className="text-yellow-400">
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle className="h-4 w-4" />
+                    <span>Track selection is locked after project submission. Your current track cannot be changed.</span>
+                  </div>
+                </AlertDescription>
+              </Alert>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
               {developmentTracks.map((track) => {
@@ -308,12 +319,14 @@ const Dashboard = ({ user }) => {
                 return (
                   <div
                     key={track.value}
-                    className={`relative p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 ${
-                      isSelected 
-                        ? 'border-[var(--color-sdc-purple-mid)] bg-[var(--color-sdc-purple-mid)]/10' 
-                        : 'border-gray-700 hover:border-gray-600'
+                    className={`relative p-4 rounded-lg border-2 transition-all duration-300 ${
+                      userData?.githubLink 
+                        ? 'border-gray-600 bg-gray-800/50 cursor-not-allowed opacity-60' 
+                        : isSelected 
+                          ? 'border-[var(--color-sdc-purple-mid)] bg-[var(--color-sdc-purple-mid)]/10 cursor-pointer' 
+                          : 'border-gray-700 hover:border-gray-600 cursor-pointer'
                     }`}
-                    onClick={() => setSelectedTrack(track.value)}
+                    onClick={() => !userData?.githubLink && setSelectedTrack(track.value)}
                   >
                     {isCurrentTrack && (
                       <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
@@ -364,7 +377,7 @@ const Dashboard = ({ user }) => {
                 
                 <Button
                   onClick={handleTrackSelection}
-                  disabled={saving || !selectedTrack || selectedTrack === userData?.developmentTrack}
+                  disabled={saving || !selectedTrack || selectedTrack === userData?.developmentTrack || userData?.githubLink}
                   className="w-full sm:w-auto btn-primary"
                 >
                   {saving ? (
@@ -375,7 +388,8 @@ const Dashboard = ({ user }) => {
                   ) : (
                     <>
                       <Save className="h-4 w-4 mr-2" />
-                      {userData?.developmentTrack ? 'Update Track' : 'Save Selection'}
+                      {userData?.githubLink ? 'Track Locked' : 
+                       userData?.developmentTrack ? 'Update Track' : 'Save Selection'}
                     </>
                   )}
                 </Button>
