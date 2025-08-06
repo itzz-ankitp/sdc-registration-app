@@ -399,6 +399,7 @@ const AdminDashboard = () => {
                       <th className="px-2 md:px-4 py-2 text-left">Name</th>
                       <th className="px-2 md:px-4 py-2 text-left hidden sm:table-cell">Email</th>
                       <th className="px-2 md:px-4 py-2 text-left hidden md:table-cell">GitHub Link</th>
+                      <th className="px-2 md:px-4 py-2 text-left hidden lg:table-cell">Live Link</th>
                       <th className="px-2 md:px-4 py-2 text-center">Track</th>
                       <th className="px-2 md:px-4 py-2 text-center">Reviewed</th>
                       <th className="px-2 md:px-4 py-2 text-center">Graded</th>
@@ -411,6 +412,13 @@ const AdminDashboard = () => {
                         <td className="px-2 md:px-4 py-2 hidden sm:table-cell">{u.email || '-'}</td>
                         <td className="px-2 md:px-4 py-2 hidden md:table-cell">
                           <a href={u.githubLink} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline">{u.githubLink}</a>
+                        </td>
+                        <td className="px-2 md:px-4 py-2 hidden lg:table-cell">
+                          {u.liveUrl ? (
+                            <a href={u.liveUrl} target="_blank" rel="noopener noreferrer" className="text-green-400 underline">{u.liveUrl}</a>
+                          ) : (
+                            <span className="text-gray-500">N/A</span>
+                          )}
                         </td>
                         <td className="px-2 md:px-4 py-2 text-center">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${

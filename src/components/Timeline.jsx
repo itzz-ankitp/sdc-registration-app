@@ -62,7 +62,7 @@ const Timeline = ({ user }) => {
       description: 'Sign up with your email and complete the registration form',
       icon: User,
       status: 'completed',
-      link: '/register',
+      link: null,
       details: 'Fill out your personal information, academic details, and create a secure password.'
     },
     {
@@ -71,7 +71,7 @@ const Timeline = ({ user }) => {
       description: 'Choose your preferred development track (Android, Web, ML, or Game Dev)',
       icon: FileCheck,
       status: userData?.developmentTrack ? 'completed' : 'current',
-      link: '/dashboard',
+      link: userData?.developmentTrack ? null : '/dashboard',
       details: 'Select from Android Development, Web Development, Machine Learning, or Game Development tracks.'
     },
     {
@@ -99,7 +99,7 @@ const Timeline = ({ user }) => {
         : userData?.submissionReviewed || userData?.githubLink
           ? 'current' 
         : (userData?.taskCompleted ? 'current' : 'pending'),
-      link: '/contact',
+      link: userData?.githubLink ? null : '/contact',
       details: userData?.submissionReviewed && userData?.graded
         ? 'Your project has been reviewed and graded successfully. Final results will be announced soon!'
         : userData?.submissionReviewed && !userData?.graded
@@ -262,6 +262,18 @@ const Timeline = ({ user }) => {
                             {step.status === 'completed' ? 'Completed' : 'Go to Step'}
                           </Button>
                         </Link>
+                      )}
+                      
+                      {/* Show completed status for steps when no link (already completed) */}
+                      {!step.link && step.status === 'completed' && (
+                        <div className="flex items-center space-x-2 text-sm text-green-400">
+                          <CheckCircle className="h-4 w-4" />
+                          <span>
+                            {step.id === 1 ? 'Account Created' :
+                             step.id === 2 ? 'Track Selected' :
+                             step.id === 4 ? 'Project Submitted' : 'Completed'}
+                          </span>
+                        </div>
                       )}
                       
                       {/* Mark as Done button for task completion step */}

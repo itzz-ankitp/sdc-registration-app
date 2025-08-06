@@ -388,15 +388,15 @@ const Dashboard = ({ user }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
           {quickActions.map((action, index) => (
             <Link key={index} to={action.link}>
-              <Card className="card-dark border-gray-800 hover:border-[var(--color-sdc-purple-mid)]/50 transition-all duration-300 transform hover:scale-105 group">
-                <CardHeader>
+              <Card className="card-dark border-gray-800 hover:border-[var(--color-sdc-purple-mid)]/50 transition-all duration-300 transform hover:scale-105 group h-full">
+                <CardHeader className="h-full flex flex-col">
                   <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${action.color} flex items-center justify-center mb-4 group-hover:animate-pulse-glow`}>
                     <action.icon className="h-6 w-6 text-white" />
                   </div>
                   <CardTitle className="text-white group-hover:sdc-text-gradient transition-all duration-300">
                     {action.title}
                   </CardTitle>
-                  <CardDescription className="text-gray-400">
+                  <CardDescription className="text-gray-400 flex-1">
                     {action.description}
                   </CardDescription>
                 </CardHeader>
@@ -489,9 +489,10 @@ const Dashboard = ({ user }) => {
                   </span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <div className={`w-2 h-2 rounded-full ${userData?.submissionReviewed ? 'bg-green-400' : (userData?.taskCompleted ? 'bg-[var(--color-sdc-purple-mid)] animate-pulse' : 'bg-gray-600')}`}></div>
+                  <div className={`w-2 h-2 rounded-full ${userData?.submissionReviewed ? 'bg-green-400' : (userData?.githubLink ? 'bg-green-400' : (userData?.taskCompleted ? 'bg-[var(--color-sdc-purple-mid)] animate-pulse' : 'bg-gray-600'))}`}></div>
                   <span className="text-gray-300">
-                    {userData?.submissionReviewed ? 'Results of the round will be out soon!' : 'Submit project details'}
+                    {userData?.submissionReviewed ? 'Results of the round will be out soon!' : 
+                     userData?.githubLink ? 'Project submitted' : 'Submit project details'}
                   </span>
                 </div>
               </div>
@@ -504,6 +505,13 @@ const Dashboard = ({ user }) => {
                         <Button size="sm" variant="outline" className="w-full sm:w-auto border-[var(--color-sdc-purple-mid)] text-[var(--color-sdc-purple-mid)] hover:bg-[var(--color-sdc-purple-mid)]/10">
                           <Code className="h-4 w-4 mr-2" />
                           View Task
+                        </Button>
+                      </Link>
+                    ) : userData?.githubLink ? (
+                      <Link to="/contact">
+                        <Button size="sm" variant="outline" className="w-full sm:w-auto border-[var(--color-sdc-purple-mid)] text-[var(--color-sdc-purple-mid)] hover:bg-[var(--color-sdc-purple-mid)]/10">
+                          <MessageCircle className="h-4 w-4 mr-2" />
+                          Contact Us
                         </Button>
                       </Link>
                     ) : (
