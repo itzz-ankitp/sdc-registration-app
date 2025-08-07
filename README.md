@@ -63,27 +63,53 @@ Visit `http://localhost:5173` to see the application.
 
 ```
 sdc-registration-app/
-├── src/
-│   ├── components/          # React components
-│   │   ├── ui/             # shadcn/ui components
-│   │   ├── Login.jsx       # Login page
-│   │   ├── Register.jsx    # Registration form
-│   │   ├── Dashboard.jsx   # User dashboard
-│   │   ├── AdminDashboard.jsx # Admin dashboard
-│   │   ├── Timeline.jsx    # Registration timeline
-│   │   ├── Contact.jsx     # Contact form
-│   │   ├── About.jsx       # About page
-│   │   ├── Profile.jsx     # User profile
-│   │   └── UserTasks.jsx   # User tasks
+├── functions/              # Firebase Cloud Functions
+│   ├── index.js
+│   ├── package.json
+│   └── package-lock.json
+├── src/                    # Source code
+│   ├── App.jsx             # Main app component
 │   ├── assets/             # Static assets (images, logos)
+│   ├── components/         # React components
+│   │   ├── ui/             # shadcn/ui components
+│   │   ├── About.jsx
+│   │   ├── Admin.jsx
+│   │   ├── AdminDashboard.jsx
+│   │   ├── Auth.jsx        # Combined sign-in/sign-up with transitions
+│   │   ├── Contact.jsx
+│   │   ├── Dashboard.jsx
+│   │   ├── DataRecovery.jsx
+│   │   ├── DatabaseTest.jsx
+│   │   ├── FirebaseTest.jsx
+│   │   ├── LoadingSpinner.jsx
+│   │   ├── MigrateUsers.jsx
+│   │   ├── Profile.jsx
+│   │   ├── Register.jsx    # (legacy, not used for main auth)
+│   │   ├── Tasks.jsx
+│   │   ├── TermsAndConditions.jsx
+│   │   ├── Timeline.jsx
+│   │   ├── UserTasks.jsx
+│   │   └── ...             # Other components
 │   ├── firebase.js         # Firebase configuration
-│   ├── App.jsx            # Main app component
-│   ├── App.css            # Custom styles
-│   └── main.jsx           # Entry point
-├── public/                # Public assets
-├── .env                   # Environment variables (place here)
-├── package.json          # Dependencies
-└── firebase.json         # Firebase configuration
+│   ├── hooks/              # Custom React hooks
+│   ├── index.css           # Tailwind and custom styles
+│   ├── lib/                # Utility functions
+│   └── main.jsx            # Entry point
+├── admin-data.json         # Admin data/config
+├── components.json         # shadcn/ui config
+├── database.rules.json     # Firebase Realtime DB rules
+├── eslint.config.js        # ESLint config
+├── firebase.json           # Firebase project config
+├── index.html              # Main HTML file (Vite entry)
+├── jsconfig.json           # JS tooling config
+├── package.json            # Project dependencies
+├── package-lock.json       # npm lockfile
+├── pnpm-lock.yaml          # pnpm lockfile
+├── README.md               # Project documentation
+├── setup-admin.js          # Admin setup script
+├── vercel.json             # Vercel deployment config
+├── vite.config.js          # Vite config
+└── .env                    # Environment variables (not committed)
 ```
 
 ## 🎯 Features
@@ -96,6 +122,12 @@ sdc-registration-app/
 - **Profile Management**: View and edit user profile information
 - **Responsive Design**: Works on desktop, tablet, and mobile devices
 - **Project Submission**: Submit GitHub links and project descriptions
+
+## 🎨 Modern UI/UX
+
+- **Animated Transitions**: Smooth sliding transitions between sign-in and sign-up forms for a modern, app-like experience.
+- **Responsive Overflow Handling**: The sign-up form is scrollable if content overflows, but the sign-in form remains static for a clean look.
+- **Custom Scrollbars**: Dropdowns and forms use custom or transparent scrollbars to match the dark theme. You can further customize scrollbars in `src/index.css`.
 
 ## 🔄 Usage Workflow
 
