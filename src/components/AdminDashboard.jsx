@@ -307,7 +307,7 @@ const AdminDashboard = () => {
                 <div className="flex flex-col items-center space-y-4">
                   <div className="w-16 h-16 rounded-lg bg-gradient-to-r from-[var(--color-sdc-purple-mid)] to-[var(--color-sdc-purple-bright)] flex items-center justify-center">
                     <Users className="h-8 w-8 text-white" />
-                  </div>
+                </div>
                   <div className="text-center">
                     <p className="text-4xl font-bold text-white">{users.length}</p>
                     <p className="text-gray-400 text-lg">Total Users</p>

@@ -4,8 +4,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 
 // Import components (we'll create these)
-import Login from './components/Login';
-import Register from './components/Register';
+import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
 import Timeline from './components/Timeline';
 import Contact from './components/Contact';
@@ -30,7 +29,7 @@ const ADMIN_UID = '0JkRLEEnv1dDEPaXaysRfchzGoT2';
 // Background Component - must be inside Router context
 const Background = () => {
   const location = useLocation();
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+  const isAuthPage = location.pathname === '/auth';
 
   if (isAuthPage) {
     // Hex pattern background for login/register pages
@@ -105,7 +104,7 @@ const AppContent = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+  const isAuthPage = location.pathname === '/auth';
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -133,12 +132,17 @@ const AppContent = () => {
         <Routes>
           {/* Public routes */}
           <Route 
+            path="/auth" 
+            element={user ? <Navigate to="/dashboard" /> : <Auth />} 
+          />
+          {/* Legacy routes for backward compatibility */}
+          <Route 
             path="/login" 
-            element={user ? <Navigate to="/dashboard" /> : <Login />} 
+            element={<Navigate to="/auth" />} 
           />
           <Route 
             path="/register" 
-            element={user ? <Navigate to="/dashboard" /> : <Register />} 
+            element={<Navigate to="/auth" />} 
           />
           <Route path="/about" element={<About />} />
           <Route path="/terms" element={<TermsAndConditions />} />
@@ -156,20 +160,20 @@ const AppContent = () => {
           {/* Protected routes */}
           <Route 
             path="/dashboard" 
-            element={user ? <Dashboard user={user} /> : <Navigate to="/login" />} 
+            element={user ? <Dashboard user={user} /> : <Navigate to="/auth" />} 
           />
           <Route 
             path="/timeline" 
-            element={user ? <Timeline user={user} /> : <Navigate to="/login" />} 
+            element={user ? <Timeline user={user} /> : <Navigate to="/auth" />} 
           />
           <Route 
             path="/contact" 
-            element={user ? <Contact /> : <Navigate to="/login" />} 
+            element={user ? <Contact /> : <Navigate to="/auth" />} 
           />
           {/* Default route */}
           <Route 
             path="/" 
-            element={user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} 
+            element={user ? <Navigate to="/dashboard" /> : <Navigate to="/auth" />} 
           />
         </Routes>
       </div>
