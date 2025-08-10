@@ -71,7 +71,7 @@ sdc-registration-app/
 │   ├── App.jsx             # Main app component
 │   ├── assets/             # Static assets (images, logos)
 │   ├── components/         # React components
-│   │   ├── ui/             # shadcn/ui components
+│   │   ├── ui/             # ui components
 │   │   ├── About.jsx
 │   │   ├── Admin.jsx
 │   │   ├── AdminDashboard.jsx
@@ -169,5 +169,5 @@ For support and questions:
 
 ---
 
-Built with ❤️ by Piratla Ankit Rama Datt
+Built by Piratla Ankit Rama Datt
 
