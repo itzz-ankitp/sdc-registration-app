@@ -20,7 +20,7 @@ import FirebaseTest from './components/FirebaseTest';
 import DataRecovery from './components/DataRecovery';
 import Tasks from './components/Tasks';
 import UserTasks from './components/UserTasks';
-
+import Chatbot from './components/Chatbot';
 
 
 // Admin UID constant
@@ -176,6 +176,9 @@ const AppContent = () => {
             element={user ? <Navigate to="/dashboard" /> : <Navigate to="/auth" />} 
           />
         </Routes>
+        
+        {/* Chatbot - appears on all pages except auth */}
+        {!isAuthPage && <Chatbot />}
       </div>
   );
 };

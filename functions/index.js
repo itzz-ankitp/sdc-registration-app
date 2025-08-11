@@ -1,36 +1,51 @@
-const functions = require(\'firebase-functions\');
-const admin = require(\'firebase-admin\');
-const cors = require(\'cors\')({ origin: true });
-const { GoogleGenerativeAI } = require(\'@google/generative-ai\');
-const sgMail = require(\'@sendgrid/mail\');
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+const cors = require('cors')({ origin: true });
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+const sgMail = require('@sendgrid/mail');
 
 admin.initializeApp();
 
-// Initialize Gemini AI
-const genAI = new GoogleGenerativeAI(functions.config().gemini?.key || process.env.GEMINI_API_KEY);
+// Initialize Gemini AI with proper environment variable
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Initialize SendGrid
-if (functions.config().sendgrid?.key || process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(functions.config().sendgrid?.key || process.env.SENDGRID_API_KEY);
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
 // SDC Chatbot Function
 exports.sdcChatbot = functions.https.onRequest((req, res) => {
   return cors(req, res, async () => {
-    if (req.method !== \'POST\') {
-      return res.status(405).json({ error: \'Method not allowed\' });
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Method not allowed' });
     }
 
     try {
       const { message } = req.body;
       
       if (!message) {
-        return res.status(400).json({ error: \'Message is required\' });
+        return res.status(400).json({ error: 'Message is required' });
       }
 
-      const model = genAI.getGenerativeModel({ model: \'gemini-pro\' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
       
-      const prompt = `You are an AI assistant for the Software Development Club (SDC) recruitment. \n      \n      Key Information:\n      - Current recruitment status: ongoing\n      - Available roles: Tech team member, Design team member, Social media team member, Content team member\n      - President: Heerath Bhat\n      - Full name: Software Development Club\n      - The club focuses on software development, programming, and technology education\n      - We welcome students from all departments and years\n      - Regular workshops, hackathons, and coding sessions are conducted\n      \n      Please respond to the following query about SDC recruitment in a helpful and friendly manner: ${message}\n      \n      If the query is outside your scope or you cannot answer it, politely inform the user and suggest they use the Contact Us form for more specific inquiries.\n      \n      Keep responses concise but informative, and maintain an enthusiastic tone about the club.`;
+      const prompt = `You are an AI assistant for the Software Development Club (SDC) recruitment. 
+
+Key Information:
+- Current recruitment status: ongoing
+- Available roles: Tech team member, Design team member, Social media team member, Content team member
+- President: Heerath Bhat
+- Full name: Software Development Club
+- The club focuses on software development, programming, and technology education
+- We welcome students from all departments and years
+- Regular workshops, hackathons, and coding sessions are conducted
+
+Please respond to the following query about SDC recruitment in a helpful and friendly manner: ${message}
+
+If the query is outside your scope or you cannot answer it, politely inform the user and suggest they use the Contact Us form for more specific inquiries.
+
+Keep responses concise but informative, and maintain an enthusiastic tone about the club.`;
 
       const result = await model.generateContent(prompt);
       const response = await result.response;
@@ -38,8 +53,10 @@ exports.sdcChatbot = functions.https.onRequest((req, res) => {
 
       res.json({ response: text });
     } catch (error) {
-      console.error(\'Error in chatbot function:\', error);
-      res.status(500).json({ \n        error: \'I apologize, but I\\\'m having trouble processing your request right now. Please try again later or use the Contact Us form for assistance.\' \n      });
+      console.error('Error in chatbot function:', error);
+      res.status(500).json({ 
+        error: 'I apologize, but I\'m having trouble processing your request right now. Please try again later or use the Contact Us form for assistance.' 
+      });
     }
   });
 });
@@ -47,41 +64,41 @@ exports.sdcChatbot = functions.https.onRequest((req, res) => {
 // Contact Form Email Function
 exports.sendContactEmail = functions.https.onRequest((req, res) => {
   return cors(req, res, async () => {
-    if (req.method !== \'POST\') {
-      return res.status(405).json({ error: \'Method not allowed\' });
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Method not allowed' });
     }
 
     try {
       const { name, email, message } = req.body;
       
       if (!name || !email || !message) {
-        return res.status(400).json({ error: \'All fields are required\' });
+        return res.status(400).json({ error: 'All fields are required' });
       }
 
       // Validate email format
       const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
       if (!emailRegex.test(email)) {
-        return res.status(400).json({ error: \'Invalid email format\' });
+        return res.status(400).json({ error: 'Invalid email format' });
       }
 
       // Store inquiry in Firestore
-      await admin.firestore().collection(\'contact_inquiries\').add({
+      await admin.firestore().collection('contact_inquiries').add({
         name,
         email,
         message,
         timestamp: admin.firestore.FieldValue.serverTimestamp(),
-        status: \'new\',
-        source: \'contact_form\'
+        status: 'new',
+        source: 'contact_form'
       });
 
       // Send confirmation email to user if SendGrid is configured
-      if (functions.config().sendgrid?.key || process.env.SENDGRID_API_KEY) {
-        const senderEmail = functions.config().sendgrid?.sender || process.env.SENDGRID_SENDER || \'noreply@sdc-easereg.firebaseapp.com\';
+      if (process.env.SENDGRID_API_KEY) {
+        const senderEmail = process.env.SENDGRID_SENDER || 'noreply@sdc-easereg.firebaseapp.com';
         
         const msgToUser = {
           to: email,
           from: senderEmail,
-          subject: \'Thank you for contacting SDC!\',
+          subject: 'Thank you for contacting SDC!',
           html: `
             <div style=\"font-family: \'Inter\', Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0A0A0A; color: #F0F0F0; padding: 20px;\">
               <div style=\"text-align: center; margin-bottom: 30px;\">
@@ -125,9 +142,9 @@ exports.sendContactEmail = functions.https.onRequest((req, res) => {
         await sgMail.send(msgToUser);
 
         // Send email to owner with Google Form and tasks
-        const ownerEmail = \'itsme.ankit2006@gmail.com\';
-        const googleFormLink = \'YOUR_GOOGLE_FORM_LINK_HERE\'; // IMPORTANT: REPLACE WITH YOUR ACTUAL GOOGLE FORM LINK
-        const tasksDetails = \'YOUR_TASKS_DETAILS_HERE\'; // IMPORTANT: REPLACE WITH YOUR ACTUAL TASKS DETAILS/LINK
+        const ownerEmail = 'itsme.ankit2006@gmail.com';
+        const googleFormLink = 'YOUR_GOOGLE_FORM_LINK_HERE'; // IMPORTANT: REPLACE WITH YOUR ACTUAL GOOGLE FORM LINK
+        const tasksDetails = 'YOUR_TASKS_DETAILS_HERE'; // IMPORTANT: REPLACE WITH YOUR ACTUAL TASKS DETAILS/LINK
 
         const msgToOwner = {
           to: ownerEmail,
@@ -155,11 +172,13 @@ exports.sendContactEmail = functions.https.onRequest((req, res) => {
       
       res.json({ 
         success: true, 
-        message: \'Thank you for your message! We have received your inquiry and will get back to you soon.\' 
+        message: 'Thank you for your message! We have received your inquiry and will get back to you soon.' 
       });
     } catch (error) {
-      console.error(\'Error sending email:\', error);
-      res.status(500).json({ \n        error: \'We received your message but encountered an issue sending the confirmation email. Our team will still respond to your inquiry.\' \n      });
+      console.error('Error sending email:', error);
+      res.status(500).json({ 
+        error: 'We received your message but encountered an issue sending the confirmation email. Our team will still respond to your inquiry.' 
+      });
     }
   });
 });
@@ -167,7 +186,10 @@ exports.sendContactEmail = functions.https.onRequest((req, res) => {
 // Health check function
 exports.healthCheck = functions.https.onRequest((req, res) => {
   return cors(req, res, async () => {
-    res.json({ \n      status: \'healthy\', \n      timestamp: new Date().toISOString(),\n      service: \'SDC Registration App Functions\'
+    res.json({ 
+      status: 'healthy', 
+      timestamp: new Date().toISOString(),
+      service: 'SDC Registration App Functions'
     });
   });
 });

@@ -60,38 +60,38 @@ const TermsAndConditions = () => {
                 <li className="space-y-2">
                   <strong className="text-purple-400">Final Decision:</strong>
                   <p>The final decision regarding membership, participation, and event outcomes lies solely in the hands of the Software Development Club leads. Their decisions are binding and non-negotiable.</p>
-                </li>
+      </li>
                 
                 <li className="space-y-2">
                   <strong className="text-purple-400">Code of Conduct:</strong>
                   <p>All members are expected to maintain respectful and professional behavior towards peers, mentors, and guests at all times. Any form of harassment or discrimination will result in immediate action.</p>
-                </li>
+      </li>
                 
                 <li className="space-y-2">
                   <strong className="text-purple-400">Academic Integrity:</strong>
                   <p>Members must not engage in plagiarism or submit work that is not their own during club activities, competitions, or events.</p>
-                </li>
+      </li>
                 
                 <li className="space-y-2">
                   <strong className="text-purple-400">Participation:</strong>
                   <p>Regular participation in club meetings, events, and activities is encouraged. Absenteeism without valid reason may affect your membership status.</p>
-                </li>
+      </li>
                 
                 <li className="space-y-2">
                   <strong className="text-purple-400">Use of Club Resources:</strong>
                   <p>Club resources (including software, hardware, and workspace) must be used responsibly and only for club-related activities.</p>
-                </li>
+      </li>
                 
                 <li className="space-y-2">
                   <strong className="text-purple-400">Privacy:</strong>
                   <p>Members must respect the privacy and confidentiality of other members' personal information and project work.</p>
-                </li>
+      </li>
                 
                 <li className="space-y-2">
                   <strong className="text-purple-400">Amendments:</strong>
                   <p>The club leads reserve the right to amend these terms and conditions at any time. Members will be notified of any changes.</p>
-                </li>
-              </ol>
+      </li>
+    </ol>
             </div>
             
             <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-6">
@@ -107,8 +107,8 @@ const TermsAndConditions = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+  </div>
+);
 };
 
 export default TermsAndConditions; 
