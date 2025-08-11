@@ -177,8 +177,8 @@ const AppContent = () => {
           />
         </Routes>
         
-        {/* Chatbot - appears on all pages except auth */}
-        {!isAuthPage && <Chatbot />}
+        {/* Chatbot - appears on all pages except auth and admin pages */}
+        {!isAuthPage && !location.pathname.startsWith('/admin') && <Chatbot />}
       </div>
   );
 };

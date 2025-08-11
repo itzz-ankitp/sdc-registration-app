@@ -130,7 +130,7 @@ sdc-registration-app/
 - **Built-in Chatbot**: Comprehensive SDC knowledge and assistance
 - **Instant Responses**: No external API dependencies
 - **Smart Queries**: Understands registration, tracks, tasks, and policies
-- **Always Available**: Floating widget accessible on all pages
+- **Always Available**: Floating widget accessible on all pages (except admin pages)
 
 ## 🔒 Important Rules & Policies
 
@@ -188,7 +188,7 @@ The built-in chatbot provides instant assistance with:
 - **Track Change Policy**: Information about track selection flexibility
 - **General SDC Info**: Club activities, roles, and contact information
 
-**Access**: Floating robot button on bottom-right corner of all pages
+**Access**: Floating robot button on bottom-right corner of all pages (except admin pages)
 
 ## 🔐 Admin Access
 
@@ -240,9 +240,9 @@ For support and questions:
 
 ---
 
-**Built with ❤️ by Piratla Ankit Rama Datt**
+**Built by Piratla Ankit Rama Datt**
 
-**Last Updated**: December 2024  
+**Last Updated**: August 2025  
 **Version**: 2.0.0  
 **Status**: Production Ready
 
